@@ -57,7 +57,7 @@ Spring的 Web 模块 包括许多唯一 web 支持的特性：
 - Sping 的标签库作为一个简单而且富有能量的`JSP` 标签库是众所周知的。它提供了一写特性的支持，比如数据绑定和主题。自定义标签允许最大限度的灵活在标记代码的时候。
 - `Beans`的整个生命周期是当前的`Http` 请求或者`Http`Session 作用域。这不是`Spring MVC `自己的特性，而是`Spring`所使用的`WebApplicationContext` 容器的特性。在这部分`bean`的作用域被描述为`request , session, global session, application, 和 WebSocket scopes`<br>
 
-**其他 MVC 实现的可插拔性**
+**其他 MVC 实现的可插拔性**<br>
 不是用Spring MVC来实现对于某些项目来说可能更可取。许多团队期待利用他们已经存在技能和工具。例如：JSF。<br>
 如果你不想要使用`Spring web mvc`，但是想利用 Spring 提供的其他的解决方案。那你可以容易的把你选择`web MVC`框架和`Spring`集成。通过他的`ContextLoaderListener`简单的启动一个Spring应用。然后访问它，从任何一个对象通过它的`ServeletContext`属性（或者 Spring 的辅助方法）。没有插件关联，所以没有必要专门的集成。从网页层指向视图，简单的把 Spring 作为一个库来使用，以启动应用上下文的实例为应用的入口点。<br>
 你注册的`beans`和Spring的`services`是唾手可得的甚至不使用`Spring MVC`。在这个场景中Spring不与其他web 框架竞争。它只是解决了一些一个纯洁的MVC 框架没有涉及的领域。从 bean 的配置到数据访问和事务控制。所以你可以丰富你的应用用Spring的中间层或者数据访问层，甚至你只是想用，例如：`JDBC`和`Hibernate`的事务抽象。
