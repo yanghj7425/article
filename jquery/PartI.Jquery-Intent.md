@@ -21,11 +21,9 @@ $(document).ready(function() {
 
 ## 元素选择
 
-|	选择符|	CSS  |JQuery	| 说明 |
-|:-------|------:|---------:|: ---:|
-|标签名	| p{}  |$('p') |取得文档中所有的段落|
-|ID		|'#some_id{}'| $('#some_id')|取得所有ID为some_id的元素|
-|类|.some_class{}|$('.some_class')|取得所有类为some_class的元素|		 
+- `$('p')` 取得文档中所有的段落<br>
+- `$('#some_id')`取得所有*ID*为`some_id`的元素<br>
+- `$('.some_class')`取得所有类为`some_class`的元素<br>		 
 
 
 
