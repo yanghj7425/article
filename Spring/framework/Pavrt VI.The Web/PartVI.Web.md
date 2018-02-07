@@ -17,7 +17,7 @@ Spring 的视图解析是极度灵活的， 一个`Controller`对于一个`Map`�
 
 **Spring MVC 的特性**
 > *Spring Web Flow*<br>
-Spring web Flow（SWF）目标是最好的解决 Web 应用程序的管理。<br>
+Spring web Flow（SWF）目标是最好的解决 Web 应用程序管理。<br>
 SWF 集成了已经存在的框架 Spring MVC 和 JSF，在Servlet 环境和Portlet环境。如果你有一个进程它从一个会话模型转变为一个与纯求情模型想法中受益，那么SWF 可能解决这个问题。<br>
 SWF 允许你捕获逻辑页面流作为它自己的模块，在不同的情况下这回高度可重用。同样的，适合构建网页模块，这将指引用户通过控制器导航，驱动业务进程。
 
