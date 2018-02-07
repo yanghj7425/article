@@ -27,7 +27,7 @@ $(document).ready(function() {
 
 
 
-####元素的 `hover`属性
+#### 元素的 `hover`属性
 当鼠标移入的的时候附加的CSS效果
 实例CSS 如下：
 ```css
@@ -57,7 +57,7 @@ JQuery 方法如下：
 ```
 为元素ID为`switcher` 下的所有`<button>`组件添加`click`事件，通过判断id来确定具体的执行操作。`toggleClass('class_name')` 方法可以判断当前Id是否具有`class_name`样式来执行具体的添加和删除操作。
 
-####JQuery 的`.hover()`方法
+#### JQuery 的`.hover()`方法
 
 `JQuery`的`.hover()`方法接受两个函数参数，第一个是鼠标移入时执行，第二个是鼠标移除是执行。
 
