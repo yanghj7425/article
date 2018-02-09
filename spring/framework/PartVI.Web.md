@@ -90,7 +90,8 @@ Spring的 Web 模块 包括许多唯一 web 支持的特性：
     </web-app>
 
 ```
-</div>
-<br>
+</div><br>
 
 正如在`7.15`的详情部分，*`ApplicationContext` 的附加功能*,`ApplicationContext`实例在`Spring`中可以被审视(scoped)。在`Web MVC`框架里，每一个`DispatcherServlet`有他自己的`WebApplicationContext`，他们继承的所有`bean`已经被定义在*根`WebApplicationContext`*上。*根`WebApplicationContext`*应该包含所有基础的`beans`，*根`WebApplivationContext`*应该在其他的`contexts`和`Servlet`实例中被分享。这些继承的`beans`可以在特殊的`servlet-scope`中被复写，你也可以为一个给定的`Servlet`实例定义新的`servlet-scope beans`。<br>
+
+根据`DispatcherServlet`的初始化，`Spring MVC` 会在你web应用的 `WEB-INF`目录下寻找一个叫做`[servlet-name]-servlet.xml`的文件，并且创建这里面定义的 `bean`。覆盖任何在全局域中用同一个名字定义`bean`。
