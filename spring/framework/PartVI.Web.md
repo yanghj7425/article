@@ -69,6 +69,8 @@ Spring的 Web 模块 包括许多唯一 web 支持的特性：
 实际上`DispatcherServlet` 是一个`Servlet`(他继承自基类`HttpServlet`)，你也可以在你的`web` 应用中像这样声明你的`web.xml`文件。你需要映射你想让`DispatcherServlet`处理的请求，通过使用在同一个`web.xml`文件中使用`URL`映射。这是一个标准的`Java EE Servlet` 配置；下面这个例子展示了`DispatcherServlet`声明和映射：<br>
 
 下面的`web.xml`等价于上面基于代码的例子：
+<div style="height:140px;width:">
+
 ```xml
     <web-app>
         <servlet>
@@ -83,5 +85,9 @@ Spring的 Web 模块 包括许多唯一 web 支持的特性：
     </web-app>
 
 ```
+</div>
+
+
 <br>
+
 正如在`7.15`的详情部分，*`ApplicationContext` 的附加功能*,`ApplicationContext`实例在`Spring`中可以被审视(scoped)。在`Web MVC`框架里，每一个`DispatcherServlet`有他自己的`WebApplicationContext`，他们继承的所有`bean`已经被定义在*根`WebApplicationContext`*上。*根`WebApplicationContext`*应该包含所有基础的`beans`，*根`WebApplivationContext`*应该在其他的`contexts`和`Servlet`实例中被分享。这些继承的`beans`可以在特殊的`servlet-scope`中被复写，你也可以为一个给定的`Servlet`实例定义新的`servlet-scope beans`。<br>
