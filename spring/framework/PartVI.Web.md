@@ -40,11 +40,48 @@ Spring的 Web 模块 包括许多唯一 web 支持的特性：
 
 
 ### 22.2 The DispatcherServlet 
+
 `Spring` 的 `MVC web` 框架跟其他许多的 `web MVC` 框架一样、请求驱动、围绕着一个`Servelt`中心，他分发请求到控制器和提供其他功能，这是促进`web`引用的发展。然而`Spring`的`DispatcherServlet`却做的更多。它完整的集成了 `Spring IOC`容器，比如允许你使用`Spring`具有的每一个特性。<br>
 `Spring Web MVC DispatcherServlet` 的工作流处理如下：<br>
 `DispatcherServlet` 其实是一个`Servlet`*它的继承自`HttpServlet`*，本身被声明在你的`web`应用中。你需要映射那些你想要`DispatcherServlet`处理的请求，通过使用`URL`映射。在 `Servlet 3.0+` 的环境中这里有一个`Java EE Servlet`的配置：<br>
-    ```java
-        
+```java 
 
+        import org.springframework.web.WebApplicationInitializer;
+        import org.springframework.web.servlet.DispatcherServlet;
 
-    ```
+        import javax.servlet.ServletContext;
+        import javax.servlet.ServletException;
+        import javax.servlet.ServletRegistration;
+
+        public class MyWebApplicationInitializer implements WebApplicationInitializer{
+
+            @Override
+            public void onStartup(ServletContext servletContext) throws ServletException {
+                ServletRegistration.Dynamic registration = servletContext.addServlet("example", new DispatcherServlet());
+                registration.setLoadOnStartup(1);
+                registration.addMapping("/example/*");
+            }
+        }
+
+```
+在上面的列子中，所有以`/example`开头的请求将被一个叫`example`的`DispacherServlet`实例处理。<br>
+`WebApplicationInitializer` 是一个`Spring MVC `提供的接口，他确保你的基础代码配置是可以被检测到的和自动初始化任何`Servlet 3`的容器。一个叫做`AbstractAnnotationConfigDispatcherServlet`的抽象类实现了`WebApplicationInitializer`这个接口甚至使它更容易注册`DispatcherServlet`通过简单的说明他的 `servlet` 映射和罗列出配置类，这是一个推荐的方式设置你的`Spring MVC` 应用。请参考 *基于代码的容器初始化* 查看更多详细信息。<br>
+实际上`DispatcherServlet` 是一个`Servlet`(他继承自基类`HttpServlet`)，你也可以在你的`web` 应用中像这样声明你的`web.xml`文件。你需要映射你想让`DispatcherServlet`处理的请求，通过使用在同一个`web.xml`文件中使用`URL`映射。这是一个标准的`Java EE Servlet` 配置；下面这个例子展示了`DispatcherServlet`声明和映射：<br>
+
+下面的`web.xml`等价于上面基于代码的例子：
+```xml
+    <web-app>
+        <servlet>
+            <servlet-name>example</servlet-name>
+            <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+            <load-on-startup>1</load-on-startup>
+        </servlet>
+        <servlet-mapping>
+            <servlet-name>example</servlet-name>
+            <url-pattern>/example/*</url-pattern>
+        </servlet-mapping>
+    </web-app>
+
+```
+<br>
+正如在`7.15`的详情部分，*`ApplicationContext` 的附加功能*,`ApplicationContext`实例在`Spring`中可以被审视(scoped)。在`Web MVC`框架里，每一个`DispatcherServlet`有他自己的`WebApplicationContext`，他们继承的所有`bean`已经被定义在*根`WebApplicationContext`*上。*根`WebApplicationContext`*应该包含所有基础的`beans`，*根`WebApplivationContext`*应该在其他的`contexts`和`Servlet`实例中被分享。这些继承的`beans`可以在特殊的`servlet-scope`中被复写，你也可以为一个给定的`Servlet`实例定义新的`servlet-scope beans`。<br>
