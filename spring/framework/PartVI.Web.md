@@ -94,4 +94,63 @@ Spring的 Web 模块 包括许多唯一 web 支持的特性：
 
 正如在`7.15`的详情部分，*`ApplicationContext` 的附加功能*,`ApplicationContext`实例在`Spring`中可以被审视(scoped)。在`Web MVC`框架里，每一个`DispatcherServlet`有他自己的`WebApplicationContext`，他们继承的所有`bean`已经被定义在*根`WebApplicationContext`*上。*根`WebApplicationContext`*应该包含所有基础的`beans`，*根`WebApplivationContext`*应该在其他的`contexts`和`Servlet`实例中被分享。这些继承的`beans`可以在特殊的`servlet-scope`中被复写，你也可以为一个给定的`Servlet`实例定义新的`servlet-scope beans`。<br>
 
-根据`DispatcherServlet`的初始化，`Spring MVC` 会在你web应用的 `WEB-INF`目录下寻找一个叫做`[servlet-name]-servlet.xml`的文件，并且创建这里面定义的 `bean`。覆盖任何在全局域中用同一个名字定义`bean`。
+根据`DispatcherServlet`的初始化，`Spring MVC` 会在你web应用的 `WEB-INF`目录下寻找一个叫做`[servlet-name]-servlet.xml`的文件，并且创建这里面定义的 `bean`。覆盖任何在全局域中用同一个名字定义`bean`。<br>
+
+思考下面`DispatcherServlet`的`Servlet`配置：<br>
+<div style="height:240px; overflow:auto">
+
+ ```xml
+
+ <web-app>
+    <servlet>
+        <servlet-name>golfing</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>golfing</servlet-name>
+        <url-pattern>/golfing/*</url-pattern>
+    </servlet-mapping>
+</web-app>
+
+ ```
+</div><br>
+
+在上面的配置中，你需要一个叫作`/WBE-INF/golfing-servlet.xml`的文件在你应用中；这个文件包括了你所有`Spring Web MVC`指定的组件（`beans`）。你也可以改变这个配置文件的精确的路径，通过一个`Servlet`初始化参数（详情看下面）:<br>
+对于单一`DispatcherServlet`的场景，只有一个根`context`是可能的。<br>
+这可以被配置通过设置一个空的`contextConfigLocation servlet`参数，正如下面这样：<br>
+<div style="height:300px;overflow:auto;">
+
+```xml
+
+<web-app>
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/root-context.xml</param-value>
+    </context-param>
+    <servlet>
+        <servlet-name>dispatcher</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value></param-value><!--空的参数-->
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>dispatcher</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+</web-app>
+
+```
+</div><br>
+
+`WebApplicationContext` 是`ApplivationContext`的一个扩展计划它有很多对于`web`应用必须的特性。它不同于正常的`ApplicationCOntext`在这方面它有解析主题的能力，它知道哪一个`Servlet`被关联（有一个到`ServletContext`的 link ）。`WebApplicationContext`被约束在`ServletContext`中。如果你需要访问它，你可以通过使用`RequestContextUtils`的静态方法随时查看`WebApplicationContext`。
+
+
+483 
+Note that we can achieve the same with java-based configurations:
