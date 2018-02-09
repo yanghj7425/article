@@ -38,5 +38,13 @@ Spring的 Web 模块 包括许多唯一 web 支持的特性：
 如果你不想要使用`Spring web mvc`，但是想利用 Spring 提供的其他的解决方案。那你可以容易的把你选择`web MVC`框架和`Spring`集成。通过他的`ContextLoaderListener`简单的启动一个Spring应用。然后访问它，从任何一个对象通过它的`ServeletContext`属性（或者 Spring 的辅助方法）。没有插件关联，所以没有必要专门的集成。从网页层指向视图，简单的把 Spring 作为一个库来使用，以启动应用上下文的实例为应用的入口点。<br>
 你注册的`beans`和Spring的`services`是唾手可得的甚至不使用`Spring MVC`。在这个场景中Spring不与其他web 框架竞争。它只是解决了一些一个纯洁的MVC 框架没有涉及的领域。从 bean 的配置到数据访问和事务控制。所以你可以丰富你的应用用Spring的中间层或者数据访问层，甚至你只是想用，例如：`JDBC`和`Hibernate`的事务抽象。
 
-page 248 
-22.2 The DispatcherServlet 
+
+### 22.2 The DispatcherServlet 
+`Spring` 的 `MVC web` 框架跟其他许多的 `web MVC` 框架一样、请求驱动、围绕着一个`Servelt`中心，他分发请求到控制器和提供其他功能，这是促进`web`引用的发展。然而`Spring`的`DispatcherServlet`却做的更多。它完整的集成了 `Spring IOC`容器，比如允许你使用`Spring`具有的每一个特性。<br>
+`Spring Web MVC DispatcherServlet` 的工作流处理如下：<br>
+`DispatcherServlet` 其实是一个`Servlet`*它的继承自`HttpServlet`*，本身被声明在你的`web`应用中。你需要映射那些你想要`DispatcherServlet`处理的请求，通过使用`URL`映射。在 `Servlet 3.0+` 的环境中这里有一个`Java EE Servlet`的配置：<br>
+    ```java
+        
+
+
+    ```
