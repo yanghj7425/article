@@ -126,6 +126,7 @@ Spring的 Web 模块 包括许多唯一 web 支持的特性：
 <web-app>
     <context-param>
         <param-name>contextConfigLocation</param-name>
+        <!-- 主要是加载驱动应用后端的中间层和数据层组件，为是父上下文-->
         <param-value>/WEB-INF/root-context.xml</param-value>
     </context-param>
     <servlet>
@@ -149,8 +150,49 @@ Spring的 Web 模块 包括许多唯一 web 支持的特性：
 ```
 </div><br>
 
-`WebApplicationContext` 是`ApplivationContext`的一个扩展计划它有很多对于`web`应用必须的特性。它不同于正常的`ApplicationCOntext`在这方面它有解析主题的能力，它知道哪一个`Servlet`被关联（有一个到`ServletContext`的 link ）。`WebApplicationContext`被约束在`ServletContext`中。如果你需要访问它，你可以通过使用`RequestContextUtils`的静态方法随时查看`WebApplicationContext`。
+`WebApplicationContext` 是`ApplivationContext`的一个扩展计划它有很多对于`web`应用必须的特性。它不同于正常的`ApplicationCOntext`在这方面它有解析主题的能力，它知道哪一个`Servlet`被关联（有一个到`ServletContext`的 link ）。`WebApplicationContext`被约束在`ServletContext`中。如果你需要访问它，你可以通过使用`RequestContextUtils`类的静态方法随时查看`WebApplicationContext`。
 
+注意到这样，我们可以同样用`Java`代码配置来实现：<br>
+```java
+import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-483 
-Note that we can achieve the same with java-based configurations:s
+public class GolfingWebApplication extends AbstractAnnotationConfigDispatcherServletInitializer {
+    @Override
+    protected Class<?>[] getRootConfigClasses() {
+        // 主要是加载驱动应用后端的中间层和数据层组件，为是父上下文
+        // GolfingAppConfig defines beans that would be in root-context.xml
+        return new Class[]{ GolfingWebApplication.class };
+    }
+
+    @Override
+    protected Class<?>[] getServletConfigClasses() {
+        //这里的配置文件主要是启用组件扫描，配置视图解析器，静态资源的处理
+        // GolfingWebConfig defines beans that would be in golfing-servlet.xml
+        return new Class[] { GolfingWebApplication.class};
+    }
+
+    @Override
+    protected String[] getServletMappings() {
+        //配置ServletMapping路径
+        return new String[] {
+                "/golfging/**"
+        };
+    }
+}
+
+```
+
+**特殊的 Bean 类型**<br>
+`Spring`的`DispatcherServlet`使用特殊的`beans`来处理请求和渲染适当的视图。这些`beans`是`Spring MVC`的一部分。你可以在你的应用中通过简单的配置选择使用他们中的一个或者多个特殊的`bean`。然而，如果你不做任何配置，`Spring MVC`维护着一个默认的`bean`使用列表。 更多的信息查看下一节，现在查看`DispatcherServlet`所依赖的这些特殊的`bean`类型。<br>
+`WebApplicationContext` 中特殊的 `bean`。<br>
+ - `HandlerMapping` : 映射来自一个请求处理器和一个前置和后置列表（处理器拦截），基于一个标准，具体的详情要看`HandlerMapping`具体的实现。最流行的实现方式是支持注解的控制器，但是也存在其他好的实现方式。
+ - `HandlerAdapter` : 帮助`DispatcherServlet`调用一个处理器映射一个请求，尽管那个处理器已经被调用了。例如：调用一个基于注解的控制器需要解析各种注解。因此`HandlerAdapter`主要的目的是把`DispatcherServlet`从这些细节中保护起来。
+- `HandlerExcetionResolver` : 映射异常到视图也允许跟多复杂的移除捕获代码。
+- `ViewResolver` : 决定逻辑根据字符串名称到一个实际的视图。
+- `LocateResolver & LocaleContextResolver` : 决定一个正在使用的客户端并且为了能够提供国际化视图尽可能的使用他们的时区。
+- `ThemeResolver` :决定你的`web`应用可以使用的主题，例如：提供私人的布局。
+- `MultipartResolver` : 解析多部分的请求，例如支持处理文件从`HTMl`表单上传。
+- `FlashMapManager` : 存储和检索`FlashMap`的`input`和`output`，这可以被用来从一个属性到林外一个属性传递属性，一般通过重定向`redirect`。   
+
+**默认的`DispatcherServlet`配置**
+前面提到的对于每一个特殊的`bean`，默认使用`DispatcherServlet`包含的一个默认`list`的实现。这个信息保存在包`org.springframework.web.servlet`中的`DispatcherServlet.properties`。<br>
