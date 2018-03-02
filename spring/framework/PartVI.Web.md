@@ -194,5 +194,13 @@ public class GolfingWebApplication extends AbstractAnnotationConfigDispatcherSer
 - `MultipartResolver` : 解析多部分的请求，例如支持处理文件从 `HTML` 表单上传。
 - `FlashMapManager` : 存储和检索 `FlashMap `的 `input `和 `output`，这可以被用来从一个属性到林外一个属性传递属性，一般通过重定向`redirect`。   
 
-**默认的 `DispatcherServlet` 配置**
+**默认的 `DispatcherServlet` 配置**<br>
 前面提到的对于每一个特殊的`bean`，默认使用`DispatcherServlet`包含的一个默认`list`的实现。这个信息保存在包`org.springframework.web.servlet`中的`DispatcherServlet.properties`。<br>
+所有特殊的 beans 有一些他们自己的合适的默认的值。虽然迟早你将要定做一个或定做一个或者多个这些 beans 提供的属性。例如，一个非常普通的配置一个 InternalResourceViewResolver 设置它的 prefix 属性为视图文件的父路径。<br>
+无论细节，这里要明白一个重要的概念。一旦在你的 WebApplicationContext 中配置了一个特殊的类 (例如 InternalResourceViewResolver )，你实际上覆盖了这个 list 的默认实现，否则这个特殊类将被使用。例如，如果你配置了一个 InternalResourceResolver ,默认列表里面的 ViewResolver 的实现会被忽略。<br>
+在 22.16 部分，“Spring MVC 配置” 将学到其他的选择，关于 Spring MVC 的配置包括 Java 配置和 XML 配置，两者都提供一个简单的开始并且假设对 Spring MVC 的工作原理一无所知。无论你怎样选择配置你的应用，这部分介绍的概念是基本的并且对你有帮助。<br><br>
+**DispatcherServlet 处理队列**<br>
+你设置一个 DispatcherServlet 之后，一个请求来了为了这个特殊的 DispatcherServlet，这个 DispatcherServlet 开始处理请求按照下面的步骤：<br>
+- 在一个请求中 WebApplicationContext 被找到并且作为一个属性绑定在请求中，在过程中控制器和其他元素可以被使用。它被约束在默认的 key  DispatcherServlet.WEB_APPLICATION_CONTEXT_ATTRIBUTE 之下。
+- 当处理请求时，区域解析请求被绑定在请求中为了在区域解析中启用元素（渲染视图、准备数据、等等）。如果你不需要区域解析，你不需要它。
+- 主题解析被绑定到请求中为了使能元素。例如，视图决定使用那一个主题，如果你没用到主题，你可以忽略它。
