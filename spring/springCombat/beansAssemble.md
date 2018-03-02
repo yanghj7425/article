@@ -12,24 +12,24 @@
  -  通过 **DI**，对象的依赖关系将由系统中负责协调各对象的第三方组件在创建对象的时候设定。
 
 #### 自动装配Bean
- - 可以在类上使用`@Component`注解，这个注解表明这个类会被作为组件，并告知*Spring*为该类创建Bean.
- -  在配置类（在一个类上使用了`@Configuration`注解）上使用`@ComponentScan`注解，该注解会默认扫描与配置类相同的包下的所有子包内的带有`@Component`注解的类；等同于xml文件中的`<context :component-scan />`标签。
+ - 可以在类上使用 `@Component` 注解，这个注解表明这个类会被作为组件，并告知*Spring*为该类创建Bean.
+ -  在配置类（在一个类上使用了 `@Configuration` 注解）上使用 `@ComponentScan` 注解，该注解会默认扫描与配置类相同的包下的所有子包内的带有 `@Component` 注解的类；等同于xml文件中的 `<context :component-scan />` 标签。
   
 ####   设置组件扫描的基础包
  > 将配置类放在单独的包中，将其与应用代码分开。
 
-- 使用`basePackage`属性：
+- 使用 `basePackage` 属性：
  - *eg:* `@Component(basePackage={"xxx","yyy"})` 
-	  会扫描 `xxx`和`yyy`包下的所有类。
+	  会扫描 `xxx` 和 `yyy` 包下的所有类。
 
-- 使用`basePackageClasses` 属性：
+- 使用 `basePackageClasses` 属性：
    - *eg:* `@Component(basePackageClasses={"xxx.class","yyy.class"})`
    将扫描类 xxx 和 yyy 包下的所有类。
 
 #### 通过添加注解实现自动装配：
-> &nbsp; 通过在类的 **构造器上添加`@Autowired`注解** 表明 Spring 在创建这个 Bean 的时候，会通过这个构造器来进行实例化，并且会传入一个可设置的 Bean 。
+> &nbsp; 通过在类的 **构造器上添加 `@Autowired` 注解** 表明 Spring 在创建这个 Bean 的时候，会通过这个构造器来进行实例化，并且会传入一个可设置的 Bean 。<br>
 > &nbsp; **注：** 该注解也可用在任何类型的Setter方法上。
-> &nbsp; 如果没有配置Bean，在创建上下文的时候Spring会抛出异常。此时可以将`@Autowires`的 `required`属性设置为*false*。
+> &nbsp; 如果没有配置Bean，在创建上下文的时候Spring会抛出异常。此时可以将 `@Autowired` 的 `required` 属性设置为*false*。
 &nbsp; &nbsp; &nbsp; &nbsp; *eg:* `@Autowired(required=false)`
 
 
