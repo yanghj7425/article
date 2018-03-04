@@ -123,5 +123,37 @@ public class GetChannel {
     }
 }
 
-
+```
+- 一旦调用`read()` 来告知`FileChannel`向`ByteBuffer`存储字节，就必须调用缓冲器上的`flip()`。
+```java
+    FileChannel in = new FileInputStream("").getChannel();
+    FileChannel out = new FileOutputStream("").getChannel();
+    ByteBuffer buffer  = ByteBuffer.allocate(1024);
+    while(in.read(buffer) != -1){
+        buffer.flip();
+        out.write(buffer);
+        buffer.clear();
+    }
+```
+- **注意：**在得到`FileChannel`之后可以使用特殊的方法`transferTo()`和`transferFrom()`。
+1. 获取基本类型
+> 尽管 `ByteBuffer`只能保存字节类型的数据，但是它具有可以从其容纳的字节数据中产生各种不同**基本类型**的方法。
+```java
+    ByteBuffer bb = ByteBuffer.allocate(1024);
+    bb.rewind(); // 返回到数据最开始的部分
+    bb.asChartBuffer().put("hello");
+    char c;
+    while((c = bb.getChar()) != 0){
+        print(c);
+    }
+    bb.rewind();
+    bb.asShortBuffer().put((short)1323);
+    print(bb.getShort());
+```
+2. 视图缓冲器
+> 视图缓存器（view buffer），可以让我们通过某个特定的基本数据类型的视图窗查看底层的 `ByteBuffer`。
+```java
+    ByteBuffer bb  = ByteBuffer.allocate(1024);
+    IntBuffer ib = bb.asIntBuffer(); //创建一个视图
+    /* 可通过 put 和  get 方法往 视图中添加数据*/
 ```
