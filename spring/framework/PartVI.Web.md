@@ -203,4 +203,13 @@ public class GolfingWebApplication extends AbstractAnnotationConfigDispatcherSer
 你设置一个 DispatcherServlet 之后，一个请求来了为了这个特殊的 DispatcherServlet，这个 DispatcherServlet 开始处理请求按照下面的步骤：<br>
 - 在一个请求中 WebApplicationContext 被找到并且作为一个属性绑定在请求中，在过程中控制器和其他元素可以被使用。它被约束在默认的 key  DispatcherServlet.WEB_APPLICATION_CONTEXT_ATTRIBUTE 之下。
 - 当处理请求时，区域解析请求被绑定在请求中为了在区域解析中启用元素（渲染视图、准备数据、等等）。如果你不需要区域解析，你不需要它。
-- 主题解析被绑定到请求中为了使能元素。例如，视图决定使用那一个主题，如果你没用到主题，你可以忽略它。
+- 主题解析被绑定到请求中为了使能元素。例如，视图决定使用那一个主题，如果你没用到主题，你可以忽略它。]
+- 如果你指定一个多文件的解析器，请求将被多文件检查；如果多文件被发现，请求被包装进一个 MultipartHttpServletRequest 在用其他元素进一步处理的过程中。
+- 搜索一个合适的处理程序。如果处理器被发现，与处理器相关的执行链被执行（预处理器、后置处理器、和控制器），为了准备模型和渲染。
+- 如果模型被返回，视图被渲染。如果没有模型返回，（可能是前置处理器或后置处理器中断了请求，也可能是其它安全原因），没有视图被渲染，因为请求已经完成了。
+控制器异常解析器被声明在 WebApplicationContext 中，挑选在处理请求过程中抛出的异常。使用这些异常解析允许你定义通用的行为到异常地址。<br><br>
+作为一个特殊的 Servelt API，Spring 的 DispatcherServlet 也支持返回最近的修改日期。确定一个特殊请求最后修改日期的过程是简单的：DispatcherServlet 查找一个合适的控制器映射并且测试这个被发现的控制器是否实现了 LastModified 接口。如果实现了，LastModified 接口的 long
+getLastModified(request) 方法的值会被返回给客户端。<br><br>
+- 你可以定做个人的 DispatcherServlet 实例通过添加 Servlet 初始化参数(init-param 元素) 到 Servlet 声明在 web.xml 文件中。<br><br>看下面，列出支持的参数：
+    1.  contextClass : 
+    2. 
