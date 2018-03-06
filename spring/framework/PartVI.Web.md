@@ -211,5 +211,47 @@ public class GolfingWebApplication extends AbstractAnnotationConfigDispatcherSer
 作为一个特殊的 Servelt API，Spring 的 DispatcherServlet 也支持返回最近的修改日期。确定一个特殊请求最后修改日期的过程是简单的：DispatcherServlet 查找一个合适的控制器映射并且测试这个被发现的控制器是否实现了 LastModified 接口。如果实现了，LastModified 接口的 long
 getLastModified(request) 方法的值会被返回给客户端。<br><br>
 - 你可以定做个人的 DispatcherServlet 实例通过添加 Servlet 初始化参数(init-param 元素) 到 Servlet 声明在 web.xml 文件中。<br><br>看下面，列出支持的参数：
-    1.  contextClass : 
-    2. 
+    1.  contextClass : 实现了 WebApplicationContext，它的实例化 context 被这个 Servlet 使用。默认的，XmlWebApplicationContext 是可用的。 
+    2. contextConfigLocation：一个字符串通过 context 实例（尤其是 contextClass）表明 context 在哪里可以被找到。这个字符串可能有多个字符串组成（用一个逗号做分隔符）为了支持多个 context。在 beans 的多个context 对象情况下，被定义两次的优先使用最新的位置。
+    3. namespace: WebAppLicationContext 默认的命名空间是 [servlet-name]-servlet。
+
+## 实现控制器
+控制器提供访问应用的行为你通常通过服务接口定义。控制器拦截用户的输入和转变它到一个模型里面，这样通过视图展示给用户。Spring 通过一种非常抽象的方式实现了一个控制器，这允许你创建多个种类的控制器。<br><br>
+Spring 2.5 为 MVC 控制器介绍了一个基于注解的编程模型，使用注解例如：@RequestMapping、@RequestParam、@ModelAttribute、等等。提供的这些注解是可用的对 Servlet MVC 和 Portlet MVC。控制器在这种方式下被实现不必要扩展指定的基类或者实现特定的接口。此外，他们通常不会直接依赖于 Servlet 或者 Portlet API，虽然你可以容易的配置访问 Servlet 或者 Portlet 实例。<br><br>
+**提示**<br>
+> 大量的 Web 应用利用本节所描述的注解，包括：MvcShowcase、MvcAjax、MvcBasic、PetClinic、和其他。
+```java
+@Controller
+public class HelloWorldController{
+    @RequestMapping("/helloworld")
+    public String helloWorld(Model model){
+        model.addAttribute("message","hello world");
+        return "helloWorlds";
+    }
+}
+```
+正如你看见的，@Controller 和 @RequestMapping 注解允许灵活的方法名称和签名。这这个特殊的例子里方法接受一个 Model 和以 String 的形式返回一个视图名称，但是各种其他的方法参数和返回值可以被使用，在这部分的后面解释。@Controller 和 @RequestMapping 和一些其他的注解形式是是实现 Spring MVC 的基础。这些注解的文档和他们在 Servlet 环境中最常用。
+
+### 用 @Controller 定义一个控制器
+@Controller 注解表明一个特殊的类以*控制器*的角色服务。Spring 不需要你扩展任何控制器基类或者参考 Servlet API。然而如果你需要，你仍然可以参考 Servlet 的特性。<br><br>
+对于一个注解类，@Controller 注解扮演一个原型注解，表明它的角色。分发器扫描这样的注解类映射方法和发现 @ReuqestMapping 注解。<br><br>
+你可以明确定义注解控制器 bean，使用 Spring 标准的 bean 定义在分发器的上下文中。然而，原型的 @Controller 允许被自动发现，Spring 通常支持在 classpath 中发现组件类和自动注册 bean 的定义。<br><br>
+为了使能自动发现例如：控制器注解，你添加组件扫描在你的配置中。使用 spring-context 模式 就像下面 XMl 脚本展示的：
+```xml
+    <?xml version="1.0" encoding="UTF-8"?>
+    <beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd">
+    <context:component-scan base-package="org.springframework.samples.petclinic.web"/>
+    <!-- ... -->
+    </beans>
+
+```
+### 用 @RequestMaping 映射请求
+你使用 @RequestMaping 注解映射到 URLs 例如 /appointments 到一个类或者一个特殊的 处理方法。
