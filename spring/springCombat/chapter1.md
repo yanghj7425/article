@@ -49,39 +49,3 @@ ApplicatonContext context = new FileSystemXmlApplicationContext("c:knight.xml");
 8. 如果 Bean 实现了 BeanPostProcessor 接口，Spring 将调用他们的 postProcessAftertInitialization() 方法。
 9. 此时，bean 已经准备就绪，可以被应用使用了，他们将一直驻留在应用上下文中，知道该上下文被销毁。
 10. 如果 bean 实现了 DisposableBean 接口，Spring 将调用它的 distory() 接口方法。同样，如果 bean 使用的 destotry-method 声明销毁方法，该方法也会被调用
-#### 自动装配Bean
- - 可以在类上使用 `@Component` 注解，这个注解表明这个类会被作为组件，并告知*Spring*为该类创建Bean.
- -  在配置类（在一个类上使用了 `@Configuration` 注解）上使用 `@ComponentScan` 注解，该注解会默认扫描与配置类相同的包下的所有子包内的带有 `@Component` 注解的类；等同于xml文件中的 `<context :component-scan />` 标签。
-  
-####   设置组件扫描的基础包
- > 将配置类放在单独的包中，将其与应用代码分开。
-
-- 使用 `basePackage` 属性：
- - *eg:* `@Component(basePackage={"xxx","yyy"})` 
-	  会扫描 `xxx` 和 `yyy` 包下的所有类。
-
-- 使用 `basePackageClasses` 属性：
-   - *eg:* `@Component(basePackageClasses={"xxx.class","yyy.class"})`
-   将扫描类 xxx 和 yyy 包下的所有类。
-
-#### 通过添加注解实现自动装配：
-> &nbsp; 通过在类的 **构造器上添加 `@Autowired` 注解** 表明 Spring 在创建这个 Bean 的时候，会通过这个构造器来进行实例化，并且会传入一个可设置的 Bean 。<br>
-> &nbsp; **注：** 该注解也可用在任何类型的Setter方法上。
-> &nbsp; 如果没有配置Bean，在创建上下文的时候Spring会抛出异常。此时可以将 `@Autowired` 的 `required` 属性设置为*false*。
-&nbsp; &nbsp; &nbsp; &nbsp; *eg:* `@Autowired(required=false)`
-
-
-##### 声明简单Bean
->在*JavaConfig* 中声明 *bean* ，使用`@Bean`这个注解，会告诉Spring 返回一个Bean，该Bean默认**ID** 为带有`@Bean` 注解的方法名。
->也可是使用`@Bean`注解的name属性指定ID：`@Bean(name="xxx")`。<br>
-
-- 注入：
-    注意的是使用：
-    
-```java
-	@Bean
-	public CDpaly cDpaly(ComPactDisc compactDisc){
-		return new  CDpaly(compactDisc);
-	}
-```
->采用这种方式时，不要求`ComPactDisc` 在同一个配置类中，其不管以何种方式，只要注册到了Spring的上下文中即可。
