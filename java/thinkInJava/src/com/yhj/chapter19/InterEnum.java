@@ -6,5 +6,5 @@ public class InterEnum {
         Food  food = Food.AppCoder.CCC;
         System.out.println(food);
     }
-    
+
 }
