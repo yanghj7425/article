@@ -27,7 +27,28 @@
 
 ### 使用应用上下文
 - `AnnotationConfigApplicationContext`：从一个或多个基于 Java 的配置类中加载 Spring 应用上下文。
-- 
+- `AnnotationConfifWebApplicationContext` : 从一个或多个基于 Java 的配置类中加载 Spring Web 应用上下文。
+- `ClassPathXmlApplicationContext` : 从类路径下的一个或者多个 XML 配置文件中加载上下文定义，把应用上下文的定义文件作为资源。
+  - 在所有类路径下，包括 JAR  文件路径。
+- `FileSystemXmlApplicationContext` : 从文件系统下的一个或者多个 XML 配置文件中加载上上下文定义。
+  - 在指定路径下。
+- `XmlWebApplicationContext` : 从 Web 应用下的一个或者多个 XML 配置文件中加载上下文的定义。
+```java
+ApplicatonContext context = new FileSystemXmlApplicationContext("c:knight.xml");
+``` 
+
+### bean 的声明周期
+正确的理解 bean 的声明周期非常重要，因为你或许需要利用 Spring 提供的扩展点来自定义 bean 的创建过程。
+1. Spring 对 bean 进行实力化。
+2. Spring 将值和 bean 的引用注入到 bean 对应的属性中。
+3. 如果 bean 实现了 BeanNameAware 接口，Spring 将 bean 的 ID 传递给 setBeanName() 方法。
+4. 如果 bean 实现了 BeanFactoryAware 接口，Spring 将调用 setBeanFactory() 方法，将 BeanFacory 实例传入。
+5. 如果 bean 实现了 ApplicationContextAware 接口，Spring 将调用 setApplicationContext() 方法，将 bean 所在的应用上下文的引用传送进来。
+6. 如果 Bean 实现了 BeanPostProcessor 接口，Spring 将调用他们的 postProcessBeforeInitialization() 方法。
+7. 如果 bean 实现了 InitializingBean 接口，Spring 将调用它的 afterPropertiesSet() 方法。类似地，如果 bean 使用 init-method 声明了初始化方法，该方法也会被调用。
+8. 如果 Bean 实现了 BeanPostProcessor 接口，Spring 将调用他们的 postProcessAftertInitialization() 方法。
+9. 此时，bean 已经准备就绪，可以被应用使用了，他们将一直驻留在应用上下文中，知道该上下文被销毁。
+10. 如果 bean 实现了 DisposableBean 接口，Spring 将调用它的 distory() 接口方法。同样，如果 bean 使用的 destotry-method 声明销毁方法，该方法也会被调用
 #### 自动装配Bean
  - 可以在类上使用 `@Component` 注解，这个注解表明这个类会被作为组件，并告知*Spring*为该类创建Bean.
  -  在配置类（在一个类上使用了 `@Configuration` 注解）上使用 `@ComponentScan` 注解，该注解会默认扫描与配置类相同的包下的所有子包内的带有 `@Component` 注解的类；等同于xml文件中的 `<context :component-scan />` 标签。
