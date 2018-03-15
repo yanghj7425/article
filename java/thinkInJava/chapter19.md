@@ -1,4 +1,4 @@
-#<center> 第 19 章 枚举类型 </center>#
+# <center> 第 19 章 枚举类型 </center>
 - 关键字 enum 可以将一组具名的值的有限集合创建为一种新的类型，而这些具名的值可以作为常规的程序组件使用。
 - enum 除了不能继承，其余的几乎跟一个常规类一样。
 ##  基本 enum 特性
@@ -85,10 +85,10 @@ public class Enums{
 
 
 ## 使用 EnumSet 替代标志
-> 能更好的说明一个二进制位是否存在，并且无需担心性能。
+- 能更好的说明一个二进制位是否存在，并且无需担心性能。
 
 ## 使用 EnumMap 
-> EnumMap 是一种特殊的 Map，要求其中的 key 必须来自一个 enum。由于 enum 限制，EnumMap 内部由数组实现。
+- EnumMap 是一种特殊的 Map，要求其中的 key 必须来自一个 enum。由于 enum 限制，EnumMap 内部由数组实现。
 
 实例代码：
 ```java
@@ -119,7 +119,7 @@ public class EnumMapMain {
     1.  通常，命令模式首先需要一个只有单一方法的接口，然后从该接口实现具有各自不同行为的多个子类。
 
 ## 常量相关的方法
-> Java 的 enum 允许程序员为 enum 实例编写方法，从而为每个 enum 实例赋予不同的行为 ： 也称表驱动方法。
+> Java 的 enum 允许程序员为 enum 实例编写方法，从而为每个 enum 实例赋予不同的行为 ： 也称**表驱动方法**。
 ```java
 public class TableDriveCode {
     public enum Table {

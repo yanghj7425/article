@@ -62,7 +62,7 @@ public class DotThis {
     public Warp warpping(){
 		return new Warp(){
 			@Override
-			public void speak() {
+			public void speak() { // 复写方法
 				super.speak();
 				System.out.println("BBBBBBB");
 			}
