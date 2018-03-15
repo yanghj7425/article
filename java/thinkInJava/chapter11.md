@@ -67,3 +67,56 @@ List 承诺可以将元素位于在特定的序列中。是一种可修改序列
 2. 使用 next() 方法获取系列中的下一个元素。
 3. 使用 hasNext() 方法检查序列中是否还有元素。
 4. 使用 remove() 方法将迭代器新近返回的元素删除。
+
+### ListIterator
+ListIterator 是一个更强大的 Iterator 的子类型，只能用于各种 List 类的访问，并且**可以双向移动**。
+
+## LinkedList
+LinkedList 也像 ArrayList 一样实现了基本的 List 接口。
+- LinkedList 还可以作为栈、队列、双端队列用法。
+## Stack
+“栈” 指“后进先出”的容器。
+- LinkedList 做栈用。
+```java
+public class Stack<T> {
+    private LinkedList<T> storage = new LinkedList<T>();
+
+    public void push(T t) {
+        storage.addFirst(t);
+    }
+
+    public T peek() {
+        return storage.getFirst();
+    }
+
+    public T pop() {
+        return storage.removeFirst();
+    }
+
+    public boolean isEmpty() {
+        return storage.isEmpty();
+    }
+
+    @Override
+    public String toString() {
+        return storage.toString();
+    }
+}
+
+```
+
+## Set
+- TreeSet 将元素存储在 红-黑 树的数据结构中，而 HashSet 使用的是散列数列。
+
+
+## Map
+
+
+## Queue
+- LinkedList 提供了支持队列的方法，并且实现了 Queue 接口。
+```java
+ Queue<Integer> queue = new LinkedList<Integer>();
+```
+
+### PriorityQueue
+PriorityQueue 添加到 Java SE5 中，
