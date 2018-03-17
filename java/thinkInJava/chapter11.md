@@ -119,4 +119,8 @@ public class Stack<T> {
 ```
 
 ### PriorityQueue
-PriorityQueue 添加到 Java SE5 中，
+PriorityQueue 添加到 Java SE5 中，当调用 offer() 方法来插入一个对象得时，对象会被序列排序。默认得序列就是当前对象在队列中得自然顺序，也可以使用 Comparator 来修改排序规则。
+
+## Foreach 与迭代器
+foreach 语法主要用于数组，也可以用于 Collection 对象。
+- Java SE5 引入得 Iterator 接口，该接口包含一个能产生 Iterator 对象得 iterator() 方法，foreach 用 iterator() 方法在序列中移动。
