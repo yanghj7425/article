@@ -254,4 +254,71 @@ public class HelloWorldController{
 
 ```
 ### 用 @RequestMaping 映射请求
-你使用 @RequestMaping 注解映射到 URLs 例如 /appointments 到一个类或者一个特殊的 处理方法。
+你使用 @RequestMaping 注解映射到 URLs 例如 /appointments 到一个类或者一个特殊的 处理方法。典型的类水平的注解映射一个特殊的请求路径到一个控制器，用额外的方法水平的注解为一个 HTTP 请求方法限制私有的映射，如（“GET”， “POST”）或者 HTTP 请求条件参数。<br>
+下面从一个简单的 Petcare 例子来展示 Spring MVC 的控制器怎样用于应用中的：
+```java
+@Controller
+@RequestMapping("/appointments")
+public class AppointmentsController {
+    private final AppointmentBook appointmentBook;
+    @Autowired
+    public AppointmentsController(AppointmentBook appointmentBook) {
+        this.appointmentBook = appointmentBook;
+    }
+    @RequestMapping(method = RequestMethod.GET)
+    public Map<String, Appointment> get() {
+        return appointmentBook.getAppointmentsForToday();
+    }
+    @RequestMapping(path = "/{day}", method = RequestMethod.GET)
+    public Map<String, Appointment> getForDay(@PathVariable @DateTimeFormat(iso=ISO.DATE) Date day,
+    Model model) {
+        return appointmentBook.getAppointmentsForDay(day);
+    }
+    @RequestMapping(path = "/new", method = RequestMethod.GET)
+    public AppointmentForm getNewForm() {
+        return new AppointmentForm();
+    }
+    @RequestMapping(method = RequestMethod.POST)
+    public String add(@Valid AppointmentForm appointment, BindingResult result) {
+        if (result.hasErrors()) {
+            return "appointments/new";
+        }
+        appointmentBook.addAppointment(appointment);
+        return "redirect:/appointments";
+    }
+}
+```
+在上面的列子，@RequestMapping 被使用在多个地方。第一次使用在类水平，它表明这个控制器的所有方法都与 路径 `/appointments`由关系。get() 方法有一个更深一层的 @RequestMappings 提炼：它只接受 GET 请求，意味着对于 `/appointments` HTTP GET 将调用这个方法。<br>
+
+** 由于翻译太慢了， 从这里开始就只记录部分内容 2018-03-18**
+
+- @RequestMapping 在类水平上的注解可以不要，省略后所有的路径都是简单的绝对路径。
+
+```java
+@Controller
+public class ClinicController {
+    private final Clinic clinic;
+    @Autowired
+    public ClinicController(Clinic clinic) {
+        this.clinic = clinic;
+    }
+    @RequestMapping("/")
+    public void welcomeHandler() {
+    }
+    @RequestMapping("/vets")
+    public ModelMap vetsHandler() {
+        return new ModelMap(this.clinic.getVets());
+    }
+}
+```
+上面的离职没有特殊的 GET、PUT、POST等等，因为 @RequestMapping 是默认的。 使用 @RequeatMapping(method=GET) 或者 使用 @GetMapping 来限制映射。
+
+### 由 @RequestMapping 组成的变体
+Sping 4.3 介绍了由 @RequeatMapping 组成的方法后级注解，为了帮助简单的映射普通的 HTTP 方法和更好的表达方法控制器的语意。
+- @GetMapping
+- @PostMapping
+- PutMapping
+- DeleteMapping
+- PatchMapping
+
+### @Controller 和 AOP 代理
