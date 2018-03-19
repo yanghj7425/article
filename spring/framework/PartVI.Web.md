@@ -317,8 +317,85 @@ public class ClinicController {
 Sping 4.3 介绍了由 @RequeatMapping 组成的方法后级注解，为了帮助简单的映射普通的 HTTP 方法和更好的表达方法控制器的语意。
 - @GetMapping
 - @PostMapping
-- PutMapping
-- DeleteMapping
-- PatchMapping
+- @PutMapping
+- @DeleteMapping
+- @PatchMapping
 
 ### @Controller 和 AOP 代理
+一些情况下一个控制器在运行时可能需要一个 AOP 代理装饰。一个例子是 如果你选择在控制器上直接有一个 @Transaction 注解。这样的情况下，对于特殊的控制器，我们推荐使用基于类的代理。这是控制器典型的选择。然而如果控制器实现了一个不是 Spring 上下文回调的接口，你可能需要显示的配置基于类的代理。例如：从`<tx :annotation-driven/>` 改变为`<tx:annotation-driven proxy-target-class="true">`。
+
+### 矩阵变量
+矩阵变量可以出现在路径的任何部分，每个矩阵变量之间用“;”(semicolon)分割。比如：`"/cars;color=red;year=2013"`。多个值之间也可以用","(comma)分割 `color=red,green`。<br>
+如果 URL 期待一个矩阵变量，请求映射模式必须用一个 URL 模板代表。这样确保请求可以被正确的匹配不管被替代的矩阵变量是否安装提供的顺序。<br>
+下面的例子期待一个矩阵变量 ‘q’：
+```java
+// GET /pets/42;q=11;r=22
+@GetMapping("/pets/{petId}")
+public void findPet(@PathVariable String petId, @MatrixVariable int q) {
+    // petId == 42
+    // q == 11
+}
+```
+自从所有的路径语法可以包含矩阵变量，在某些情况下你需要特别指定矩阵变量期待的位置：
+```java
+// GET /owners/42;q=11/pets/21;q=22
+@GetMapping("/owners/{ownerId}/pets/{petId}")
+public void findPet( @MatrixVariable(name="q", pathVar="ownerId") int q1, @MatrixVariable(name="q", pathVar="petId") int q2) {
+    // q1 == 11
+    // q2 == 22
+}
+
+```
+一个矩阵变量可以被定义做一个可选择的和一个特殊的默认值：
+```java
+// GET /pets/42
+@GetMapping("/pets/{petId}")
+public void findPet(@MatrixVariable(required=false, defaultValue="1")  int q) {
+    // q == 1
+}
+
+```
+所有的矩阵变量可以在一个 Map 里面获得:
+```java
+// GET /owners/42;q=11;r=12/pets/21;q=22;s=23
+@GetMapping("/owners/{ownerId}/pets/{petId}")
+public void findPet(
+@MatrixVariable MultiValueMap<String, String> matrixVars, @MatrixVariable(pathVar="petId") MultiValueMap <String, String> petMatrixVars) {
+    // matrixVars: ["q" : [11,22], "r" : 12, "s" : 23]
+    // petMatrixVars: ["q" : 11, "s" : 23]
+}
+
+```
+**注意**：要使矩阵变量可用，你必须设置 RequestMappingHandlerMapping 的 removeSemicolonContent 属性为 false ，默认为 true。
+> 提示 ：MVC 的 java 配置和 MVC 的命名空间都为开启对矩阵变量的使用提供的选项。 <br> ......
+
+
+## 定义一个 @RequestMapping 处理方法
+@RequestMapping 处理方法有非常灵活的特性。支持的方法参数和返回值在下面的部分被叙述。大部分的参数可以被以任意的顺序使用，唯一不同的是 BindingResult 参数。这在下一节被叙述。
+
+### 支持的方法参数类型
+以下是支持的方法参数：
+- request 或 response 对象(Servlet API)。选择任意指定的请求或响应类型，例如：ServletRequest 或 HttpServletRequest。
+- session 对象(Servlet API)。 一种 HttpSession 类型，一个这种类型的参数强制存在与一个交叉回话中。这样一个结果，这样的参数永远不会是 null。
+
+> 提示：Session 访问可能不是线程安全的。尤其是在一个 Servlet 环境中。考虑设置 RequestMappingHandlderAdapter 在 Session 的同步锁标识为 true 。如果多个请求被允许同时访问一个 session 。
+- org.springframework.web.context.request.WebRequest 或 org.springframework.web.context.request.NativeWebRequest 允许通用的 request 参数访问和 request/session 属性访问，没有绑定到 native Servlet/Portlet API。
+- java.util.Locale 为了当前请求的区域，取决于最近的可用的区域，配置 LocaleResolver/LocaleContextResolver  在 MVC 的环境中可以生效。
+- org.springframework.http.HttpMethod 为了 HTTP 请求 方法。
+- java.security.Principal 包含当前的已经认证的作者。
+- @PathVariable 注解参数为了访问 URL 模板参数。
+- @MatrixVariable 注解参数为了访问位于 URL 路径中的 name-value 部分。
+- @RequestParam 注解参数为了访问特殊的 Servlet 请求参数。参数值被转变导已经声明的方法参数类型。
+- @RequestHeader 注解参数为了访问特殊的 Servlet 请求 HTTP 的 headers。参数值被转变导已经声明的方法参数类型。
+- @RequestBody 注解参数为了访问特殊的 Servlet 请求 HTTP 的 body。参数值通过 HttpMessageConverters 被转变导已经声明的方法参数类型。
+- @RequestPart 注解参数为了访问 “multipart/form-data” 的内容。文件上传下载。
+- @SessionAttribute 注解参数为了访问已经存在的、永久的 session 属性与 model 属性通过 @SessionAttribute 临时存储与 session 作为 Controller 的工作流。
+- @RequestAttribute 注解参数为了访问请求属性。
+- HttpEntity<?> 参数访问 Servlet 请求 HTTP header 和 contents。请求流通过HttpMessageConverter 转变导 entity body。
+- org.springframework.web.servlet.mvc.support.RedirectAttributes 到一个特殊的确切的属性集合在使用 redirect 的情况还要添加 flash 属性。
+- 命令或者表单对象绑定 request 参数到 bean 的属性(通过 setters) 或直接到域，用一个可以定制的转变类型，依赖于 @InitBinder 方法或 HandlerAdapter 的配置。
+- org.springframework.validation.Errors / org.springframework.validation.BindingResult 在命令对象或表单对象之前效验结果。
+- org.springframework.web.bind.support.SessionStatus 标记处理完成的状态句柄，这个触发清空集成在 @SessionAttributes 注解在处理器水平的 session 属性。
+- org.springframework.web.util.UriComponentsBuilder 一个构建器预处理 URL 到当前请求的 host、port、scheme、context path、和文本部分的Servlet 映射关系。
+
+Errors 或 BindingResult 参数不得不遵循 model 对象,作为一个方法签名 model 对象会被立即绑定。可能会有不止一个 model 对象, Spring 将为每一个对象创建单独的 BindingResult 实例。
