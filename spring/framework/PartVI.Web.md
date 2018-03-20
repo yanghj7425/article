@@ -399,3 +399,17 @@ public void findPet(
 - org.springframework.web.util.UriComponentsBuilder 一个构建器预处理 URL 到当前请求的 host、port、scheme、context path、和文本部分的Servlet 映射关系。
 
 Errors 或 BindingResult 参数不得不遵循 model 对象,作为一个方法签名 model 对象会被立即绑定。可能会有不止一个 model 对象, Spring 将为每一个对象创建单独的 BindingResult 实例。
+
+### 支持方法返回值类型
+1. 用 @RequestParam 绑定到 request 参数到一个方法中。
+    - 参数默认是必须的，但是可以设置他的 required 属性为 false。如：@RequestParam(name="id",required="false").
+    - 当 @RequestParam 注解使用到一个 Map<String, String> 或 MultiValueMap<String, String> 参数，这个Map 会被所有的请求参数填充。
+2. 用 @RequestBody 映射 request body。<br>
+ @RequestBody 方法注解表明这个方法参数会被绑定到 HTTP request body 中。
+```java
+@PutMapping("/something")
+public void handle(@RequestBody String body, Writer writer) throws IOException {
+    writer.write(body);
+}
+```
+可以使用 HttpMessageConverter 转变 request body 到一个方法参数。HttpMessageConverter 是可靠的转变 HTTP 请求消息到一个对象和从一个对象到 HTTP response body。
