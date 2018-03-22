@@ -413,3 +413,56 @@ public void handle(@RequestBody String body, Writer writer) throws IOException {
 }
 ```
 可以使用 HttpMessageConverter 转变 request body 到一个方法参数。HttpMessageConverter 是可靠的转变 HTTP 请求消息到一个对象和从一个对象到 HTTP response body。
+
+### jackSon 序列化视图支持
+过滤掉将要被序列化到 HTTP 响应中的上下文对象是有用的。为了提供这样的能力，Spring MVC 已经编译了支持 JackSon 的序列化视图。<br>
+为了使用 @ResponseBody 控制器或控制器方法返回 ResponseEntity，简单的添加一个 @Jackson 注解，用一个类做参数指定被使用的视图类或者接口:
+```java
+@RestController
+public class UserController {
+    @GetMapping("/user")
+    @JsonView(User.WithoutPasswordView.class)
+    public User getUser() {
+        return new User("eric", "7!jd#h23");
+    }
+}
+public class User {
+    public interface WithoutPasswordView {};
+    public interface WithPasswordView extends WithoutPasswordView {};
+    private String username;
+    private String password;
+        public User() {
+    }
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+    @JsonView(WithoutPasswordView.class)
+    public String getUsername() {
+        return this.username;
+    }
+    @JsonView(WithPasswordView.class)
+    public String getPassword() {
+        return this.password;
+    }
+}
+```
+**注意:**<br>
+尽管 @JsonView 允许指定多于一个类被指定，用在控制器的方法上仅仅支持一个明确的类参数。考虑使用一个接口混合如果你需要使能多个视图。<br><br>
+
+### jackson JSON 的支持
+为了使能 JSONP 支持 @ResponseBody 和 ResponseEntity 方法。声明一个 @ControllerAdvice 类继承 AbstractJsonpResponseBodyAdvice 如下所示构造器的参数表明 JSONP 查询参数。
+
+```java
+@ControllerAdvice
+public class JsonpAdvice extends AbstractJsonpResponseBodyAdvice {
+    public JsonpAdvice() {
+        super("callback");
+    }
+}
+
+```
+控制器依赖视图解析，当一个请求有一个 jsonp 或 callback 的查询参数，JSONP 自动开启。这些名称可以通过 jsonpParameterNames 属性定制。
+
+## 异步处理请求
+Spring MVC3.2 曾经介绍过基于 Servlet 3 的异步请求处理。代替返回一个值，通常控制器方法现在可以返回一个 java.util.concurrent.Callable 然后处理从 Spring 管理的线程中返回的一个值。同时 Servlet 的主线程是存在的，释放并且允许处理其他的请求。当 Callable 返回的时候，Spring MVC 调用的是 TaskExcutor 里面的单独的一个线程。通过 Callable 的返回值，请求被发送回 Servlet 的容器恢复执行。<br> ... <br>
