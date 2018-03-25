@@ -466,3 +466,24 @@ public class JsonpAdvice extends AbstractJsonpResponseBodyAdvice {
 
 ## 异步处理请求
 Spring MVC3.2 曾经介绍过基于 Servlet 3 的异步请求处理。代替返回一个值，通常控制器方法现在可以返回一个 java.util.concurrent.Callable 然后处理从 Spring 管理的线程中返回的一个值。同时 Servlet 的主线程是存在的，释放并且允许处理其他的请求。当 Callable 返回的时候，Spring MVC 调用的是 TaskExcutor 里面的单独的一个线程。通过 Callable 的返回值，请求被发送回 Servlet 的容器恢复执行。<br> ... <br>
+
+## 处理器映射
+ 在之前的 Spring 版本，用户需要在 Web 应用上下文中定义一个或多个 HandlerMapping 来映射 web 请求到一个合适的处理器。在引入注解的控制器中，你通常不需要这么做因为 RequestMappingHandlerMapping 自动在所有@Controller 注解的 bean 中寻找@RequestMapping 注解。然而，请记住类扩展自 AbstractHandlerMapping 的 HandlerMapping 又一些属性，你可以用来定制他们的行为。
+
+ ### 用一个 HandlerInterceptor 拦截请求
+ Spring 处理程序的拦截机制包括处理程序的拦截器，当你想应用一个特殊的功能到某些请求时，这是非常有用的，比如 ： 检查权限。<br>
+ 拦截器被定位在处理程序中，必须从 `org.springframework.web.servlet` 包里面实现 HandlerInterceptor 。这个接口定义了三个方法：`preHandle(..)` 、 `postHandle(..)`、`afterCompletion(..)`。
+
+ ## 视图解析
+ 所有的 MVC　框架对 web 应用都提供了一种方法解析视图。Spring 提供了视图解析器，它使你在浏览器中可以渲染模型，不同绑定特定的视图技术。<br>
+ 两个重要的接口 ViewResolver 和 View 这是 Spring 处理视图重要的方法。ViewResolver 提供了名称视图和逻辑视图之间的映射。View 接口预处理请求然后把请求递交给另外的视图技术。
+### 视图解析链
+Spring 支持多个视图解析器。因此你可以把多个视图解析器串成链，比如：在某些情况下复写特殊的视图。你可以通过添加多于一个视图解析器在你的应用上下文中创建视图解析器链。如果必须的，通过设置 order 属性来指定特殊的顺序。记住，越在链后面的视图解析器有越高的优先级。
+
+### 重定向到视图
+正如之前提到的，一个控制器通常返回一个逻辑视图名称，这是视图解析器解析到一个特别的视图技术。对于视图技术，比如： JSP 这是通过 Servlet 或 JSP 引擎处理，这样的解析通常是通过混合 InternalResourceViewResolver 和 InternalResourceView 来处理的，它发行一个内部重定向或引入通过 Servlet 的 API `RequestDispatcher.forward(..)` 方法或`RequestDispatcher.include()` 方法。<br>
+有时是可取的在视图渲染之前发一个 HTTP 重定向回客户端。这是可取的，比如：当一个控制器已经被 POST 调用，响应实际上是被委托给另外一个控制器（比如，表单提交）。在这样的情况，一个正常的内部重定向意味着其他的控制器也将看见一样的数据，这是一个潜在的问题如果它可以把它和其他预期的值混淆。<br>
+> 另外的一个在显示结果之前执行从定性的理由是：尽可能的消除用户提交表单的可能性。在这样的情形下，浏览器将首先发一个最初的 POST；浏览器将收到一个响应要重定向到不同的 URL；最后浏览器将执行向后面响应的 URL 执行一个 GET。因此在浏览器看来，当前的页面没有收到 POST 的影响，而是另一个 GET 的影响。这样的结果是，用户没有方式通过刷新来意外的提交重复的数据。刷新强制了一个 GET 的结果，而不是重新发送一个 POST 数据。
+
+## 重定向视图
+一种强制让一个控制器响应结果重定向是：控制器创建并返回一个 Spring 的 RedirectView 实例。这种情况下， DispatcherServlet 没有使用正常的视图解析机制。另外因为它已经被给了一个重定向视图，DispatcherServlet 只是简单的命令视图做它的工作。 RedirectView 反过来调用 HttpServletResponse.sendRedirect() 发送 HTTP 重定向到浏览器客户端。<br>
