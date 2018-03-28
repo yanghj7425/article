@@ -39,10 +39,10 @@
 
 ### 通过 `FilterInputStream` 和 `FilterOutputStream` 读取数据
     - `DataInputStream` 允许读取不同的基本数据类型及 String 对象（所有的方法都以`read`开头，如:`readByte()、readFloat()`）。
-    - `DataInputStream` 用`readByte()`时，任何字节值都是合法的，不能用返回值来判断是否结束。可使用`avaliable()`方法查看还有多少个可存取的字符。
-    - 当使用 `readUTF()` 和`writeUTF()`时，只适用于 Java 程序之间的交互。
-### 通过`FilterOutputStream`向`OutputStream`中写入数据
-    - 与`DataInputStream`对应的是`DataOutputStream`，可以将各种基本数据类型以及 String 对象格式化输入到“流”中。
+    - `DataInputStream` 用 `readByte()`时，任何字节值都是合法的，不能用返回值来判断是否结束。可使用 `avaliable()` 方法查看还有多少个可存取的字符。
+    - 当使用 `readUTF()` 和 `writeUTF()` 时，只适用于 Java 程序之间的交互。
+### 通过 `FilterOutputStream` 向 `OutputStream` 中写入数据
+    - 与 `DataInputStream` 对应的是 `DataOutputStream`，可以将各种基本数据类型以及 String 对象格式化输入到“流”中。
     - `PrintStream` 和`PrintWriter` : 未完全国际化，不能以平台无关的方式处理。
 ## Reader 和 Writer
 - `InputStream` 和 `OutputStream` 在面向 **字节** 的 I/O 中提供极有价值的功能。
@@ -124,7 +124,7 @@ public class GetChannel {
 }
 
 ```
-- 一旦调用`read()` 来告知`FileChannel`向`ByteBuffer`存储字节，就必须调用缓冲器上的`flip()`。
+- 一旦调用`read()` 来告知 `FileChannel` 向 `ByteBuffer` 存储字节，就必须调用缓冲器上的 `flip()`。
 ```java
     FileChannel in = new FileInputStream("").getChannel();
     FileChannel out = new FileOutputStream("").getChannel();

@@ -391,7 +391,7 @@ public void findPet(
 - @RequestPart 注解参数为了访问 “multipart/form-data” 的内容。文件上传下载。
 - @SessionAttribute 注解参数为了访问已经存在的、永久的 session 属性与 model 属性通过 @SessionAttribute 临时存储与 session 作为 Controller 的工作流。
 - @RequestAttribute 注解参数为了访问请求属性。
-- HttpEntity<?> 参数访问 Servlet 请求 HTTP header 和 contents。请求流通过HttpMessageConverter 转变导 entity body。
+- HttpEntity<?> 参数访问 Servlet 请求 HTTP header 和 contents。请求流通过HttpMessageConverter 转变导 entity body。7
 - org.springframework.web.servlet.mvc.support.RedirectAttributes 到一个特殊的确切的属性集合在使用 redirect 的情况还要添加 flash 属性。
 - 命令或者表单对象绑定 request 参数到 bean 的属性(通过 setters) 或直接到域，用一个可以定制的转变类型，依赖于 @InitBinder 方法或 HandlerAdapter 的配置。
 - org.springframework.validation.Errors / org.springframework.validation.BindingResult 在命令对象或表单对象之前效验结果。

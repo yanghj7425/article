@@ -99,7 +99,7 @@ fruit[0] = new Apple();
 List<Fruit> list = new ArrayList<Apple>(); 
 
 ```
-- 通配符允许在两个类型之间创建谬种类型的向上转型的关系。
+- 通配符允许在两个类型之间创建某种类型的向上转型的关系。
     - 执行了这种向上转型，就将丢失向其中传递任何对象的能力，Object 也不行。
 ```java
     List<? extends Fruit> list = new ArrayList<Apple>(); 
@@ -140,12 +140,12 @@ public class Fruit {
 }
 
 public class Apple extends Fruit {
-
     @Override
     public void type() {
         System.out.println("Apple");
     }
 }
+
 public class GenericsAndCovariance {
     public static void main(String[] args) {
         List<Fruit> list = new ArrayList<Fruit>();
