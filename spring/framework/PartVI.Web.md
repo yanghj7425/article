@@ -2,9 +2,9 @@
 这部分的参考手册覆盖 Spring 框架支持的表示层(特殊的基于Web的表示层 `presentation tier`) 包括在 web 引用中支持 `WebSocket-sytle` 消息。<br>
 Spring 框架有他自己的 Web 框架，`Spring Web MVC`,第一章里面覆盖了`Spring MVC`的相关知识，随后的章节关注`Spring` 框架跟其它 Web 记住的集成，接下来是 `Spring` 框架的 `MVC protlet` 框架，然后本节在 26 章综合的总结了`Spring` 框架对 `WebSocket`的支持。
 
-## 22. Web MVC 框架
-### 22.1 Spring MVC 框架的介绍
-`Spring` 的 Web 模型-视图-控制 框架是围绕着 `DispacherServlet` 设计的。它分发 `requests` 到 `handlers`，可以配置 `handler` 的映射，视图解析，定位，时区，主题也支持文件的上传下载。默认的 handler 时基于 `@Controller` 和 `@RequestMapping` 注解，提供了一个广泛灵活的处理方法。从引入 `Spring 3.0` 开始，`@Controller` 机制(mechanism)也允许你创建一个 `RESTful` 网站和应用，通过 `@PathVariable` 注解和其他的特性。<br>
+## Web MVC 框架
+### Spring MVC 框架的介绍
+`Spring` 的 Web 模型-视图-控制 框架是围绕着 `DispacherServlet` 设计的。它分发 `requests` 到 `handlers`，可以配置 `handler` 的映射、视图解析、定位、时区、主题也支持文件的上传下载。默认的 handler 是基于 `@Controller` 和 `@RequestMapping` 注解，提供了一个广泛灵活的处理方法。从引入 `Spring 3.0` 开始，`@Controller` 机制(mechanism)也允许你创建一个 `RESTful` 网站和应用，通过 `@PathVariable` 注解和其他的特性。<br>
 
 >“面向扩展开放……” Spring Web MVC 设计的原则的关键和在一个普通的 Spring 应用中一个关键的原则时 “面向扩展开放，面向修改封闭”。<br>
 Spring MVC 中一些在核心类里面的方法被标记为 `final` 的。作为一个开发者你的不能复写这些方法来支持你自己的行为。这不是武断的做法，但是特别要记住这个原则。<br>
@@ -12,7 +12,7 @@ Spring MVC 中一些在核心类里面的方法被标记为 `final` 的。作为
  你不能添加 `advice` 到一个 `final` 方法，当你使用 Spring MVC 的时候。 例如, 你不能添加 `advice` 给`AbstractController.setSynchronizeOnSession()` 方法。请参考 “Understanding AOP proxies” 学习跟多关于AOP代理的信息和为什么不能添加一个`advice`给一个 final 方法。<br>
 
 
-在 `Spring MVC` 中你可以使用任何的对象作为一个指令或者 `form-backing` (以表格为后盾的对象)对象。你不需要实现框架的特性接口或者继承一个类。Spring 的数据绑定时高度灵活的： 例如，它将类型不匹配作为一个效验错误，会被应用评估，而不是不是作为系统错误。因此你不需要简单的复制你业务对象的属性，无类型的 String 在你的表单对象简单的被处理为无效的提交，或者转变String的属性。相反的，通常最好是直接绑定业务对象。<br>
+在 `Spring MVC` 中你可以使用任何的对象作为一个指令或者 `form-backing` (以表格为后盾的对象)对象。你不需要实现框架的特性接口或者继承一个类。Spring 的数据绑定是高度灵活的： 例如，它将类型不匹配作为一个效验错误，会被应用评估，而不是不是作为系统错误。因此你不需要简单的复制你业务对象的属性，无类型的 String 在你的表单对象简单的被处理为无效的提交，或者转变String的属性。相反的，通常最好是直接绑定业务对象。<br>
 Spring 的视图解析是极度灵活的， 一个 `Controller` 对于一个 `Map` 模型的数据和选择视图名称是经典可靠的，但是它也可以直接写一个 `response` 流来完成请求。视图名称解析是一个高度可配置的通过扩展名或者接受会话头的内、通过 Bean 名称、一个属性文件或者甚至一个经典的 `ViewResolver` 来实现。模型（MVC 中的 M）是一个 Map 接口，这样允许完全抽象的视图技术。你可以直接和基于模板渲染的技术集成，例如： JSP ，Velocity 和 Freemarker，或者直接产生 XML， JSON ，Atom 和许多其他类型的内容。模型 `Map` 简单的转变到一个适合的格式，例如 JSP 的 `request attributes`，一个`Velocity`模板模型。
 
 **Spring MVC 的特性**
@@ -21,25 +21,25 @@ Spring web Flow（SWF）目标是最好的解决 Web 应用程序管理。<br>
 SWF 集成了已经存在的框架 Spring MVC 和 JSF，在Servlet 环境和 Portlet 环境。如果你有一个进程它从一个会话模型转变为一个与纯求情模型想法中受益，那么 SWF 可能解决这个问题。<br>
 SWF 允许你捕获逻辑页面流作为它自己的模块，在不同的情况下这回高度可重用。同样的，适合构建网页模块，这将指引用户通过控制器导航，驱动业务进程。
 
-Spring 的 Web 模块 包括许多唯一 web 支持的特性：
+Spring 的 Web 模块包括许多唯一 web 支持的特性：
 - 角色分明。每一个角色——控制器、效验器、命令对象、表单对象、模板对象、`DispatcherServlet`、`handler mapping`、视图解析器等等。被一系列的序列化对象实现。
 - `javaBeans` 作为框架和应用类直接强有力且直接的配置。这种配功能包括容易引用的上下文，例如 从 web 控制器到业务对象和验证器。
 - 可适配的，非倾入式的和灵活的。你需要定义任意一个控制器的方法签名，尽可能的是员工众多参数注解中的一个（例如 ：`@RequestParam, @RequestHeader, @PathVariable`和其他的）作为一个方案。
 - 业务代码的重用，不需要复制。使用已经存在的业务对象作为命令或者表当对象而不是镜像他们来扩展框架基础类的特性。
-- 可定制的绑定和验证，类型不匹配作为一个应用水平的效验错误，一直是一个讨厌的值，当地日期和数字额绑定，因此我们不再只使用字符串表当对象，儿视手动解析和转变为一个业务对象。
+- 可定制的绑定和验证，将类型不匹配作为一个应用水平的效验错误一直是一个讨厌的值，当地日期和数字额绑定，因此我们不再只使用字符串表当对象，而是手动解析和转变为一个业务对象。
 - 可定制的控制器处理程序和视图解析器。控制器处理程序和视图解析的策略来自简单的基于` URL `的配置，到复杂的专门解决的策略。Spring 比 Web MVC 框架授权技术更加灵活。
-- 灵活的模型转变，再任何视图技术中模型转变从 name 到 value 的映射支持更加容易集成。
-- 可定制的语言环境，时区，和主题解析。支持有或没有 Spring 标签库的 JSP。支持 `JSTL` ，支持不需要额外桥梁的 `Velocity` 等等。
+- 灵活的模型转变，在任何视图技术中模型转变从 name 到 value 的映射支持更加容易集成。
+- 可定制的语言环境、时区、和主题解析。支持有或没有 Spring 标签库的 JSP。支持 `JSTL` ，支持不需要额外桥梁的 `Velocity` 等等。
 - Spring 的标签库作为一个简单而且富有能量的 `JSP` 标签库是众所周知的。它提供了一写特性的支持，比如数据绑定和主题。自定义标签允许最大限度的灵活在标记代码的时候。
 - `Beans` 的整个生命周期是当前的 `Http` 请求或者 `HttpSession` 作用域。这不是`Spring MVC `自己的特性，而是`Spring`所使用的`WebApplicationContext` 容器的特性。在这部分`bean`的作用域被描述为`request , session, global session, application, 和 WebSocket scopes`。<br>
 
 **其他 MVC 实现的可插拔性**<br>
 不是用 Spring MVC 来实现对于某些项目来说可能更可取。许多团队期待利用他们已经存在技能和工具。例如：JSF。<br>
 如果你不想要使用 `Spring web mvc`，但是想利用 Spring 提供的其他的解决方案。那你可以容易的把你选择 `Web MVC`框架和 `Spring` 集成。通过他的 `ContextLoaderListener` 简单的启动一个 Spring 应用。然后访问它，从任何一个对象通过它的 `ServeletContext` 属性（或者 Spring 的辅助方法）。没有插件关联，所以没有必要专门的集成。从网页层指向视图，简单的把 Spring 作为一个库来使用，以启动应用上下文的实例为应用的入口点。<br>
-你注册的 `beans` 和 Spring 的 `services` 是唾手可得的甚至不使用 `Spring MVC` 。在这个场景中 Spring 不与其他 web 框架竞争。它只是解决了一些一个纯洁的 MVC 框架没有涉及的领域。从 bean 的配置到数据访问和事务控制。所以你可以丰富你的应用用 Spring 的中间层或者数据访问层，甚至你只是想用，例如：`JDBC` 和 `Hibernate` 的事务抽象。
+你注册的 `beans` 和 Spring 的 `services` 是唾手可得的甚至不使用 `Spring MVC` 。在这个场景中 Spring 不与其他 web 框架竞争。它只是解决了一些一个纯洁的 MVC 框架没有涉及的领域。从 bean 的配置到数据访问和事务控制。所以你可以丰富你的应用 Spring 的中间层或数据访问层，甚至你只是想用，例如：`JDBC` 和 `Hibernate` 的事务抽象。
 
 
-### 22.2 The DispatcherServlet 
+### The DispatcherServlet 
 
 `Spring` 的 `MVC web` 框架跟其他许多的 `web MVC` 框架一样、请求驱动、围绕着一个`Servelt`中心，他分发请求到控制器和提供其他功能，这是促进 `web` 引用的发展。然而 `Spring` 的 `DispatcherServlet` 却做的更多。它完整的集成了 `Spring IOC` 容器，比如允许你使用 `Spring` 具有的每一个特性。<br>
 `Spring Web MVC DispatcherServlet` 的工作流处理如下：<br>
@@ -183,7 +183,7 @@ public class GolfingWebApplication extends AbstractAnnotationConfigDispatcherSer
 ```
 
 **特殊的 Bean 类型**<br>
-`Spring` 的 `DispatcherServlet` 使用特殊的 `beans` 来处理请求和渲染适当的视图。这些 `beans` 是 `Spring MVC` 的一部分。你可以在你的应用中通过简单的配置选择使用他们中的一个或者多个特殊的 `bean`。然而，如果你不做任何配置，`Spring MVC` 维护着一个默认的    `bean` 使用列表。 更多的信息查看下一节，现在查看 `DispatcherServlet` 所依赖的这些特殊的 `bean` 类型。<br>
+`Spring` 的 `DispatcherServlet` 使用特殊的 `beans` 来处理请求和渲染适当的视图。这些 `beans` 是 `Spring MVC` 的一部分。你可以在你的应用中通过简单的配置选择使用他们中的一个或者多个特殊的 `bean`。然而，如果你不做任何配置，`Spring MVC` 维护着一个默认的 `bean` 使用列表。 更多的信息查看下一节，现在查看 `DispatcherServlet` 所依赖的这些特殊的 `bean` 类型。<br>
 `WebApplicationContext` 中特殊的 `bean`。<br>
  - `HandlerMapping` : 映射来自一个请求处理器和一个前置和后置列表（处理器拦截），基于一个标准，具体的详情要看`HandlerMapping`具体的实现。最流行的实现方式是支持注解的控制器，但是也存在其他好的实现方式。
  - `HandlerAdapter` : 帮助 `DispatcherServlet `调用一个处理器映射一个请求，尽管那个处理器已经被调用了。例如：调用一个基于注解的控制器需要解析各种注解。因此 `HandlerAdapter` 主要的目的是把 `DispatcherServlet` 从这些细节中保护起来。
@@ -198,12 +198,12 @@ public class GolfingWebApplication extends AbstractAnnotationConfigDispatcherSer
 前面提到的对于每一个特殊的`bean`，默认使用`DispatcherServlet`包含的一个默认`list`的实现。这个信息保存在包`org.springframework.web.servlet`中的`DispatcherServlet.properties`。<br>
 所有特殊的 beans 有一些他们自己的合适的默认的值。虽然迟早你将要定做一个或定做一个或者多个这些 beans 提供的属性。例如，一个非常普通的配置一个 InternalResourceViewResolver 设置它的 prefix 属性为视图文件的父路径。<br>
 无论细节，这里要明白一个重要的概念。一旦在你的 WebApplicationContext 中配置了一个特殊的类 (例如 InternalResourceViewResolver )，你实际上覆盖了这个 list 的默认实现，否则这个特殊类将被使用。例如，如果你配置了一个 InternalResourceResolver ,默认列表里面的 ViewResolver 的实现会被忽略。<br>
-在 22.16 部分，“Spring MVC 配置” 将学到其他的选择，关于 Spring MVC 的配置包括 Java 配置和 XML 配置，两者都提供一个简单的开始并且假设对 Spring MVC 的工作原理一无所知。无论你怎样选择配置你的应用，这部分介绍的概念是基本的并且对你有帮助。<br><br>
+在 “Spring MVC 配置” 将学到其他的选择，关于 Spring MVC 的配置包括 Java 配置和 XML 配置，两者都提供一个简单的开始并且假设对 Spring MVC 的工作原理一无所知。无论你怎样选择配置你的应用，这部分介绍的概念是基本的并且对你有帮助。<br><br>
 **DispatcherServlet 处理队列**<br>
 你设置一个 DispatcherServlet 之后，一个请求来了为了这个特殊的 DispatcherServlet，这个 DispatcherServlet 开始处理请求按照下面的步骤：<br>
 - 在一个请求中 WebApplicationContext 被找到并且作为一个属性绑定在请求中，在过程中控制器和其他元素可以被使用。它被约束在默认的 key  DispatcherServlet.WEB_APPLICATION_CONTEXT_ATTRIBUTE 之下。
 - 当处理请求时，区域解析请求被绑定在请求中为了在区域解析中启用元素（渲染视图、准备数据、等等）。如果你不需要区域解析，你不需要它。
-- 主题解析被绑定到请求中为了使能元素。例如，视图决定使用那一个主题，如果你没用到主题，你可以忽略它。]
+- 主题解析被绑定到请求中为了使能元素。例如，视图决定使用那一个主题，如果你没用到主题，你可以忽略它。
 - 如果你指定一个多文件的解析器，请求将被多文件检查；如果多文件被发现，请求被包装进一个 MultipartHttpServletRequest 在用其他元素进一步处理的过程中。
 - 搜索一个合适的处理程序。如果处理器被发现，与处理器相关的执行链被执行（预处理器、后置处理器、和控制器），为了准备模型和渲染。
 - 如果模型被返回，视图被渲染。如果没有模型返回，（可能是前置处理器或后置处理器中断了请求，也可能是其它安全原因），没有视图被渲染，因为请求已经完成了。
@@ -211,7 +211,7 @@ public class GolfingWebApplication extends AbstractAnnotationConfigDispatcherSer
 作为一个特殊的 Servelt API，Spring 的 DispatcherServlet 也支持返回最近的修改日期。确定一个特殊请求最后修改日期的过程是简单的：DispatcherServlet 查找一个合适的控制器映射并且测试这个被发现的控制器是否实现了 LastModified 接口。如果实现了，LastModified 接口的 long
 getLastModified(request) 方法的值会被返回给客户端。<br><br>
 - 你可以定做个人的 DispatcherServlet 实例通过添加 Servlet 初始化参数(init-param 元素) 到 Servlet 声明在 web.xml 文件中。<br><br>看下面，列出支持的参数：
-    1.  contextClass : 实现了 WebApplicationContext，它的实例化 context 被这个 Servlet 使用。默认的，XmlWebApplicationContext 是可用的。 
+    1. contextClass : 实现了 WebApplicationContext，它的实例化 context 被这个 Servlet 使用。默认的，XmlWebApplicationContext 是可用的。 
     2. contextConfigLocation：一个字符串通过 context 实例（尤其是 contextClass）表明 context 在哪里可以被找到。这个字符串可能有多个字符串组成（用一个逗号做分隔符）为了支持多个 context。在 beans 的多个context 对象情况下，被定义两次的优先使用最新的位置。
     3. namespace: WebAppLicationContext 默认的命名空间是 [servlet-name]-servlet。
 
@@ -230,7 +230,7 @@ public class HelloWorldController{
     }
 }
 ```
-正如你看见的，@Controller 和 @RequestMapping 注解允许灵活的方法名称和签名。这这个特殊的例子里方法接受一个 Model 和以 String 的形式返回一个视图名称，但是各种其他的方法参数和返回值可以被使用，在这部分的后面解释。@Controller 和 @RequestMapping 和一些其他的注解形式是是实现 Spring MVC 的基础。这些注解的文档和他们在 Servlet 环境中最常用。
+正如你看见的，@Controller 和 @RequestMapping 注解允许灵活的方法名称和签名。这个特殊的例子里方法接受一个 Model 和以 String 的形式返回一个视图名称，但是各种其他的方法参数和返回值可以被使用，在这部分的后面解释。@Controller 和 @RequestMapping 和一些其他的注解形式是是实现 Spring MVC 的基础。这些注解的文档和他们在 Servlet 环境中最常用。
 
 ### 用 @Controller 定义一个控制器
 @Controller 注解表明一个特殊的类以*控制器*的角色服务。Spring 不需要你扩展任何控制器基类或者参考 Servlet API。然而如果你需要，你仍然可以参考 Servlet 的特性。<br><br>
@@ -288,7 +288,7 @@ public class AppointmentsController {
     }
 }
 ```
-在上面的列子，@RequestMapping 被使用在多个地方。第一次使用在类水平，它表明这个控制器的所有方法都与 路径 `/appointments`由关系。get() 方法有一个更深一层的 @RequestMappings 提炼：它只接受 GET 请求，意味着对于 `/appointments` HTTP GET 将调用这个方法。<br>
+在上面的列子，@RequestMapping 被使用在多个地方。第一次使用在类水平，它表明这个控制器的所有方法都与路径 `/appointments`由关系。get() 方法有一个更深一层的 @RequestMappings 提炼：它只接受 GET 请求，意味着对于 `/appointments` HTTP GET 将调用这个方法。<br>
 
 ** 由于翻译太慢了， 从这里开始就只记录部分内容 2018-03-18**
 
@@ -322,7 +322,7 @@ Sping 4.3 介绍了由 @RequeatMapping 组成的方法后级注解，为了帮�
 - @PatchMapping
 
 ### @Controller 和 AOP 代理
-一些情况下一个控制器在运行时可能需要一个 AOP 代理装饰。一个例子是 如果你选择在控制器上直接有一个 @Transaction 注解。这样的情况下，对于特殊的控制器，我们推荐使用基于类的代理。这是控制器典型的选择。然而如果控制器实现了一个不是 Spring 上下文回调的接口，你可能需要显示的配置基于类的代理。例如：从`<tx :annotation-driven/>` 改变为`<tx:annotation-driven proxy-target-class="true">`。
+一些情况下一个控制器在运行时可能需要一个 AOP 代理装饰。一个例子是:如果你选择在控制器上直接有一个 @Transaction 注解。这样的情况下，对于特殊的控制器，我们推荐使用基于类的代理。这是控制器典型的选择。然而如果控制器实现了一个不是 Spring 上下文回调的接口，你可能需要显示的配置基于类的代理。例如：从`<tx :annotation-driven/>` 改变为`<tx:annotation-driven proxy-target-class="true">`。
 
 ### 矩阵变量
 矩阵变量可以出现在路径的任何部分，每个矩阵变量之间用“;”(semicolon)分割。比如：`"/cars;color=red;year=2013"`。多个值之间也可以用","(comma)分割 `color=red,green`。<br>
@@ -391,7 +391,7 @@ public void findPet(
 - @RequestPart 注解参数为了访问 “multipart/form-data” 的内容。文件上传下载。
 - @SessionAttribute 注解参数为了访问已经存在的、永久的 session 属性与 model 属性通过 @SessionAttribute 临时存储与 session 作为 Controller 的工作流。
 - @RequestAttribute 注解参数为了访问请求属性。
-- HttpEntity<?> 参数访问 Servlet 请求 HTTP header 和 contents。请求流通过HttpMessageConverter 转变导 entity body。7
+- HttpEntity<?> 参数访问 Servlet 请求 HTTP header 和 contents。请求流通过HttpMessageConverter 转变导 entity body。
 - org.springframework.web.servlet.mvc.support.RedirectAttributes 到一个特殊的确切的属性集合在使用 redirect 的情况还要添加 flash 属性。
 - 命令或者表单对象绑定 request 参数到 bean 的属性(通过 setters) 或直接到域，用一个可以定制的转变类型，依赖于 @InitBinder 方法或 HandlerAdapter 的配置。
 - org.springframework.validation.Errors / org.springframework.validation.BindingResult 在命令对象或表单对象之前效验结果。
@@ -481,12 +481,12 @@ Spring MVC3.2 曾经介绍过基于 Servlet 3 的异步请求处理。代替返�
 Spring 支持多个视图解析器。因此你可以把多个视图解析器串成链，比如：在某些情况下复写特殊的视图。你可以通过添加多于一个视图解析器在你的应用上下文中创建视图解析器链。如果必须的，通过设置 order 属性来指定特殊的顺序。记住，越在链后面的视图解析器有越高的优先级。
 
 ### 重定向到视图
-正如之前提到的，一个控制器通常返回一个逻辑视图名称，这是视图解析器解析到一个特别的视图技术。对于视图技术，比如： JSP 这是通过 Servlet 或 JSP 引擎处理，这样的解析通常是通过混合 InternalResourceViewResolver 和 InternalResourceView 来处理的，它发行一个内部重定向或引入通过 Servlet 的 API `RequestDispatcher.forward(..)` 方法或`RequestDispatcher.include()` 方法。<br>
+正如之前提到的，一个控制器通常返回一个逻辑视图名称，这是视图解析器解析到一个特别的视图技术。对于视图技术，比如: JSP 这是通过 Servlet 或 JSP 引擎处理，这样的解析通常是通过混合 InternalResourceViewResolver 和 InternalResourceView 来处理的，它发行一个内部重定向或引入通过 Servlet 的 API `RequestDispatcher.forward(..)` 方法或`RequestDispatcher.include()` 方法。<br>
 有时是可取的在视图渲染之前发一个 HTTP 重定向回客户端。这是可取的，比如：当一个控制器已经被 POST 调用，响应实际上是被委托给另外一个控制器（比如，表单提交）。在这样的情况，一个正常的内部重定向意味着其他的控制器也将看见一样的数据，这是一个潜在的问题如果它可以把它和其他预期的值混淆。<br>
 > 另外的一个在显示结果之前执行从定性的理由是：尽可能的消除用户提交表单的可能性。在这样的情形下，浏览器将首先发一个最初的 POST；浏览器将收到一个响应要重定向到不同的 URL；最后浏览器将执行向后面响应的 URL 执行一个 GET。因此在浏览器看来，当前的页面没有收到 POST 的影响，而是另一个 GET 的影响。这样的结果是，用户没有方式通过刷新来意外的提交重复的数据。刷新强制了一个 GET 的结果，而不是重新发送一个 POST 数据。
 
 ### 重定向视图
-一种强制让一个控制器响应结果重定向是：控制器创建并返回一个 Spring 的 RedirectView 实例。这种情况下， DispatcherServlet 没有使用正常的视图解析机制。另外因为它已经被给了一个重定向视图，DispatcherServlet 只是简单的命令视图做它的工作。 RedirectView 反过来调用 HttpServletResponse.sendRedirect() 发送 HTTP 重定向到浏览器客户端。<br>
+一种强制让一个控制器响应结果重定向是：控制器创建并返回一个 Spring 的 RedirectView 实例。这种情况下， DispatcherServlet 没有使用正常的视图解析机制。另外因为它已经被给了一个重定向视图，DispatcherServlet 只是简单的命令视图做它的工作。RedirectView 反过来调用 HttpServletResponse.sendRedirect() 发送 HTTP 重定向到浏览器客户端。<br>
 如果你使用 RedirectView，视图会被控制器自己创建。推荐配置重定向 URL 注入到控制器，这样就不会被放到控制器中，但是是以视图名称配置在上下文对象中的。
 
 ### 通过数据重定向目标
