@@ -413,3 +413,98 @@ public void handle(@RequestBody String body, Writer writer) throws IOException {
 }
 ```
 可以使用 HttpMessageConverter 转变 request body 到一个方法参数。HttpMessageConverter 是可靠的转变 HTTP 请求消息到一个对象和从一个对象到 HTTP response body。
+
+### jackSon 序列化视图支持
+过滤掉将要被序列化到 HTTP 响应中的上下文对象是有用的。为了提供这样的能力，Spring MVC 已经编译了支持 JackSon 的序列化视图。<br>
+为了使用 @ResponseBody 控制器或控制器方法返回 ResponseEntity，简单的添加一个 @Jackson 注解，用一个类做参数指定被使用的视图类或者接口:
+```java
+@RestController
+public class UserController {
+    @GetMapping("/user")
+    @JsonView(User.WithoutPasswordView.class)
+    public User getUser() {
+        return new User("eric", "7!jd#h23");
+    }
+}
+public class User {
+    public interface WithoutPasswordView {};
+    public interface WithPasswordView extends WithoutPasswordView {};
+    private String username;
+    private String password;
+        public User() {
+    }
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+    @JsonView(WithoutPasswordView.class)
+    public String getUsername() {
+        return this.username;
+    }
+    @JsonView(WithPasswordView.class)
+    public String getPassword() {
+        return this.password;
+    }
+}
+```
+**注意:**<br>
+尽管 @JsonView 允许指定多于一个类被指定，用在控制器的方法上仅仅支持一个明确的类参数。考虑使用一个接口混合如果你需要使能多个视图。<br><br>
+
+### jackson JSON 的支持
+为了使能 JSONP 支持 @ResponseBody 和 ResponseEntity 方法。声明一个 @ControllerAdvice 类继承 AbstractJsonpResponseBodyAdvice 如下所示构造器的参数表明 JSONP 查询参数。
+
+```java
+@ControllerAdvice
+public class JsonpAdvice extends AbstractJsonpResponseBodyAdvice {
+    public JsonpAdvice() {
+        super("callback");
+    }
+}
+
+```
+控制器依赖视图解析，当一个请求有一个 jsonp 或 callback 的查询参数，JSONP 自动开启。这些名称可以通过 jsonpParameterNames 属性定制。
+
+## 异步处理请求
+Spring MVC3.2 曾经介绍过基于 Servlet 3 的异步请求处理。代替返回一个值，通常控制器方法现在可以返回一个 java.util.concurrent.Callable 然后处理从 Spring 管理的线程中返回的一个值。同时 Servlet 的主线程是存在的，释放并且允许处理其他的请求。当 Callable 返回的时候，Spring MVC 调用的是 TaskExcutor 里面的单独的一个线程。通过 Callable 的返回值，请求被发送回 Servlet 的容器恢复执行。<br> ... <br>
+
+## 处理器映射
+ 在之前的 Spring 版本，用户需要在 Web 应用上下文中定义一个或多个 HandlerMapping 来映射 web 请求到一个合适的处理器。在引入注解的控制器中，你通常不需要这么做因为 RequestMappingHandlerMapping 自动在所有@Controller 注解的 bean 中寻找@RequestMapping 注解。然而，请记住类扩展自 AbstractHandlerMapping 的 HandlerMapping 又一些属性，你可以用来定制他们的行为。
+
+ ### 用一个 HandlerInterceptor 拦截请求
+ Spring 处理程序的拦截机制包括处理程序的拦截器，当你想应用一个特殊的功能到某些请求时，这是非常有用的，比如 ： 检查权限。<br>
+ 拦截器被定位在处理程序中，必须从 `org.springframework.web.servlet` 包里面实现 HandlerInterceptor 。这个接口定义了三个方法：`preHandle(..)` 、 `postHandle(..)`、`afterCompletion(..)`。
+
+ ## 视图解析
+ 所有的 MVC　框架对 web 应用都提供了一种方法解析视图。Spring 提供了视图解析器，它使你在浏览器中可以渲染模型，不同绑定特定的视图技术。<br>
+ 两个重要的接口 ViewResolver 和 View 这是 Spring 处理视图重要的方法。ViewResolver 提供了名称视图和逻辑视图之间的映射。View 接口预处理请求然后把请求递交给另外的视图技术。
+### 视图解析链
+Spring 支持多个视图解析器。因此你可以把多个视图解析器串成链，比如：在某些情况下复写特殊的视图。你可以通过添加多于一个视图解析器在你的应用上下文中创建视图解析器链。如果必须的，通过设置 order 属性来指定特殊的顺序。记住，越在链后面的视图解析器有越高的优先级。
+
+### 重定向到视图
+正如之前提到的，一个控制器通常返回一个逻辑视图名称，这是视图解析器解析到一个特别的视图技术。对于视图技术，比如： JSP 这是通过 Servlet 或 JSP 引擎处理，这样的解析通常是通过混合 InternalResourceViewResolver 和 InternalResourceView 来处理的，它发行一个内部重定向或引入通过 Servlet 的 API `RequestDispatcher.forward(..)` 方法或`RequestDispatcher.include()` 方法。<br>
+有时是可取的在视图渲染之前发一个 HTTP 重定向回客户端。这是可取的，比如：当一个控制器已经被 POST 调用，响应实际上是被委托给另外一个控制器（比如，表单提交）。在这样的情况，一个正常的内部重定向意味着其他的控制器也将看见一样的数据，这是一个潜在的问题如果它可以把它和其他预期的值混淆。<br>
+> 另外的一个在显示结果之前执行从定性的理由是：尽可能的消除用户提交表单的可能性。在这样的情形下，浏览器将首先发一个最初的 POST；浏览器将收到一个响应要重定向到不同的 URL；最后浏览器将执行向后面响应的 URL 执行一个 GET。因此在浏览器看来，当前的页面没有收到 POST 的影响，而是另一个 GET 的影响。这样的结果是，用户没有方式通过刷新来意外的提交重复的数据。刷新强制了一个 GET 的结果，而不是重新发送一个 POST 数据。
+
+### 重定向视图
+一种强制让一个控制器响应结果重定向是：控制器创建并返回一个 Spring 的 RedirectView 实例。这种情况下， DispatcherServlet 没有使用正常的视图解析机制。另外因为它已经被给了一个重定向视图，DispatcherServlet 只是简单的命令视图做它的工作。 RedirectView 反过来调用 HttpServletResponse.sendRedirect() 发送 HTTP 重定向到浏览器客户端。<br>
+如果你使用 RedirectView，视图会被控制器自己创建。推荐配置重定向 URL 注入到控制器，这样就不会被放到控制器中，但是是以视图名称配置在上下文对象中的。
+
+### 通过数据重定向目标
+在重定向 URL 时，默认的所有模型的属性都被考虑到暴露在 URL 模板变量中。在剩下的属性中，原始的类型或集合/数组的类型都自动的作为查询参数添加。<br>
+原始属性作为查询参数添加可能时一个期待得结果，如果一个模型实例是为了重定向特别准备的。然而被注解的控制的模型可能为了渲染的目的被添加了额外的属性。为了尽可能的避免有属性出现在 URL　里面　@RequestMapping 方法可以声明一个 RedirectAttributes 类型的属性，使用他指定确切的属性给 RedirectView 使用。如果方法被重定向，RedirectAttributes 的内容就会被使用。另外，模型的内容也是可用的。<br>
+RequestMappingHandlerAdapter 提供了一个叫作 ignoreDefaultModelOnRedirect 的属性，可以用来表明如果一个控制器方法重定向默认的 Model 不因该被使用。替代控制的方法应该被声明为一个 RedirectAttributes 类型的属性或者如果不在属性里面则应该通过 RedirectView。MVC 命名空间和 MVC　Java　配置为了向后兼容保持这个属性为 false。然而，对于新应用我们推荐把他设置为 true。<br>
+**注意** 当扩展一个重定向 URL 和不需要明确的添加 Model 和 RedirectAttributes 时，来自当前请求的 URL 模板变量自动可用。例如：
+```java
+@PostMapping("/files/{path}")
+public String upload(...) {
+// ...
+    return "redirect:files/{path}";
+}
+```
+另外的一种将数据传递给重定向的方法是通过 Flash Attributes。不像其他的重定向属性，flash 属性是被存储在 HTTP session 中。
+
+### 重定向： prefix
+虽然使用 RedirectView 可以很好的工作，如果控制器自己创建了 RedirectView，控制器重定向正在发生是一个不可避免的事实。这真的是次优的并且二者关系太紧密了。控制器不因该认真关心响应怎样得到处理。一般的它应该只操作一组已经被注入的视图名称。<br>
+特殊的 `redirect` 前缀讯息你完这个。如果被返回的视图名称的前缀有一个 `redirect:` ，UrlBaseViewResolver 将识别出来并作为需要重定向的特殊的指示。剩下的 URL 将被当作重定向的 URL 对待。<br>
+网络上的效果是一样的，如果控制器返回一个 RedirectView，但是现在控制器自己可以操作一组逻辑视图名称。一个逻辑视图名称，比如: redirect:/myapp/some/resources 将要重定向到相对当前 Servlet 上下文中，当这样 `redirect:http://myhost.com/some/arbitrary/path` 一个名称出现的时候将被重定向到一个绝对路径。<br>
+**注意** 控制器是被 @ResponseStatus 注解的，注解的值将被优先响应通过 RedirectView。
