@@ -6,7 +6,7 @@
 一步一步来 ~
 ## 初探
 创建一个 js 文件 1.js：
-```
+```javascript
 $(document).ready(function() {
 	alert('hello');
 	console.log("hello I`m here , where are you ");
