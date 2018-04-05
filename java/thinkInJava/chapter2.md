@@ -20,7 +20,7 @@
 |  boolean      |   ——        |  ——         |   ——        | Boolean    |
 |   char        |   16-bit    |  Unicode 0  | Unicode 2<sup>16</sup>-1| Character|
 |   byte        |   8-bit     |    -128     |   +127      |  Byte      |
-|   short       |   16-bit    | -2<sup>15</sup>| 2<sup>15<sup>-1| Short|
+|   short       |   16-bit    | -2<sup>15</sup>| 2<sup>15</sup>-1| Short|
 |   int         |   32-bit    | -2<sup>31</sup>| 2<sup>31</sup>-1| Integer|
 |   long        |   64-bit    | -2<sup>63</sup>| 2<sup>63</sup>-1| Long|
 |   float       |   32-bit    | IEEE754|IEEE754| Float|
