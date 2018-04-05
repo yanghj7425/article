@@ -19,7 +19,7 @@ public class Holder<T>{
 
 ### 一个元组类库
 元组：将一组对象直接打包存储与其中的一个单一对象。这样，仅一次方法调用就能返回多个对象。二元组如下：
-
+- final 声明能够保护 public 元素。
 ```java
 public class TwoTuple<A, B>{
     public final A a;
@@ -65,6 +65,22 @@ public class GenericVarargs{
 }
 ```
 
+### 杠杆利用类型参数推断
+- 可以省去很多代码。
+```java
+public class New {
+    public static <K, V> map<K, V>{
+        return new HashMap<K,V>();
+    }
+}
+public class SimplePat{
+    public static void main(String [] s){
+        Map<Person,List<? extends Pet>> petP = New.map(); // 编译器会自动推断数据类型。 
+    }
+}
+```
+> 如上所示：如果把 New.map() 作为参数传递给方法的话，编译器不会执行类型推断。
+
 ## 擦出的神秘之处
 Java 的泛型是通过擦出来实现的。如: List<String> 和 List<Integer> 实际上运行的是相同的类型，这两种形式都被擦出成“原生”的类型。
 ```java
@@ -85,6 +101,19 @@ System.out.println(c1 == c2);// :~ true
 - 即使擦出在方法或者类内部移除了有关实际类型的信息，编译器依旧可以确保在方法或在类中使用的内部一致性。
 - 边界：编译器在编译期执行类型检查并插入转型代码的地点。  
 
+
+### 泛型数组
+- 成功创建泛型数组的唯一方式是：创建一个被茶树类型的新数组。
+    - 由于类型擦出： 需要知道确切的类型信息。
+```java
+public class GenericArray<T>{
+    private T[] array;
+    public GenericArray(int size){
+        array = (T[]) new Object(size); // array = (T[]) Array.newInstance(type, size); //: Class<T> type;
+    }
+}
+
+```
 ## 通配符
 - 数组对象可以保留有关它们包含的对象类型的规则。
 ```java
@@ -124,7 +153,7 @@ List<Fruit> list = new ArrayList<Apple>();
 ```
 - List 参数是 `<? super T>`，因此这个 List 持有从 T 导出某种 **具体类型**。 
 ### 无边界通配符
-无边界通配符 <?>，意味着任何事物。允许参数是任何类型。
+无边界通配符 <?> : 意味着任何事物，允许参数是任何类型。
 - List<?> 看起来等价于 List<Object>，而 List 也是 List<Object>。
     1. List 表示 “持有任何 Object 类型的原生 List”。
     2. List<?> 表示 “具有 **某种特定类型** 的非原生 List，只是不知道是什么类型”。
@@ -176,7 +205,7 @@ Fruit
 - 自动包装机制会介入
 
 ### 实现参数话接口
-- 由于擦出，一个类实现一个泛型接口的两种变体。会被擦出为相同的类型。
+- 由于擦出，一个类不能实现一个泛型接口的两种变体。会被擦出为相同的类型。
 
 ### 转型和警告
 - 使用带有泛型类型参数的转型或 instanceof 不会由任何效果。会被擦出为第一个边界，默认为 Object。
@@ -188,11 +217,14 @@ void f(List<T> t){}
 void f<List<W> w>{}
 ```
 ### 基类劫持接口 <sub>P<sub>404</sub></sub>
+- 父类实现了一个泛型参数的接口，现在导出类也需要实现同样的接口但是泛型参数不一样，则不能通过编译。
 
 ## 自限定的类型
+> SelfBounded 类接受泛型参数 T ，而 T 由一个边界限定，这个边界就是拥有 T 作为其参数的。
 ```java
  class SelfBounded<T extends SelfBounded<T>>{
 
  }
 ```
+
 - 可以保证类型参数必须与正在被定义的类相同；*自限定限制* 只能作用于 **继承关系**。
