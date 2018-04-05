@@ -70,10 +70,13 @@ RTTI 和 反射之间的真正区别
     }
     ```
 2. 通过反射访问域
-    - 即使 private 的域通过反射也能获取到
+    - 即使 private 的域通过反射也能获取到。
     ```java
         WithPrivateField pf = new WithPrivateField(); // 有一个  private int i 
         Field f = pf.getClass().getDeclaredField("i");
         f.setAccessiable(true);
         sout(f.getInt(pf));
+        //修改
+        f.set(pf, 100);
     ```
+    - 如果元素是 final 的，系统在不抛出异常的情况下接受任何的修改尝试，final 的不能修改成功。
