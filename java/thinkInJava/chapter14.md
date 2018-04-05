@@ -8,8 +8,12 @@ Runtime type information ： 运行时，识别一个对象类型。<br>
 ## Class 对象
 - Java 使用 Class 对象来执行其 RTTI 。
 - 每个类都有一个 Class 对象，运行这个程序的 Java 虚拟机( JVM ) ，使用“类加载器”的子系统。
-- 所有的类都是在对其第一次使用的时候，动态加载到 JVM 中的。
+- 所有的类都是在对其第一次使用的时候，动态加载到 JVM 中的，这个类的字节码被加载时，它们会接受验证，以确保其没有被破坏对象，并且不包含不良 Java 代码。
 - Class 的 newInstance() 方法是实现“虚拟构造器”的一种途径。使用 newInstance() 方法创建的类，必须有默认构造器。
+- Class.forName("全类名") 返回一个 Class 对象引用。
+    ```java
+        Class c = Class.forName("全类名");
+    ```
 
 ### 类字面常量
 Java 还提供了使用**类字面常量**来生成 Class 引用。
@@ -56,12 +60,20 @@ RTTI 和 反射之间的真正区别
 实例代码： src/com/yhj/chapter14
 
 ## 接口与类型信息
-通过使用反射，仍旧可以到达并调用所有方法，甚至是**private**方法！如果知道方法名，就可以在其 Method 对象上调用 setAccessible(true)。
-```java
-static void callHiddenMethod(Object o, String methodName) throw Exception{
-    Method m = o.getClass().getDeclaredMethod(methodName);
-    m.setAccessible(true);
-    m.invoke(a);
-}
-
-```
+1. 通过反射访问方法
+    - 通过使用反射，仍旧可以到达并调用所有方法，甚至是**private**方法！如果知道方法名，就可以在其 Method 对象上调用 setAccessible(true)。
+    ```java
+    static void callHiddenMethod(Object o, String methodName) throw Exception{
+        Method m = o.getClass().getDeclaredMethod(methodName);
+        m.setAccessible(true);
+        m.invoke(a);
+    }
+    ```
+2. 通过反射访问域
+    - 即使 private 的域通过反射也能获取到
+    ```java
+        WithPrivateField pf = new WithPrivateField(); // 有一个  private int i 
+        Field f = pf.getClass().getDeclaredField("i");
+        f.setAccessiable(true);
+        sout(f.getInt(pf));
+    ```
