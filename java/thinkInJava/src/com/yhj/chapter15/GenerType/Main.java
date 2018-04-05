@@ -8,7 +8,6 @@ public class Main {
         List<? super Car> list = new ArrayList<Car>();
         list.add(new BicycleCar());
         list.add(new SingleCar());
-
         for(Object o : list){
             Car c = (Car) o;
             c.introduce();
