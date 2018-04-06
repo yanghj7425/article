@@ -1,10 +1,9 @@
-package com.yhj.chapter21.sharelimit;
+package com.yhj.chapter21.concurrency;
 
 public abstract class IntGenerator {
     private volatile boolean canceled = false;
 
-    public abstract int next();
-
+    public abstract int nextInt();
     public void cancel() {
         canceled = true;
     }

@@ -52,9 +52,9 @@ java.util 类库中有 Arrays 类，有一套用于数组的 static 方法。
 - System.arraycopy() : 不会执行自动包装和拆包，两个数组必须有确切的类型信息。
     - 拷贝数组比 for 循环快的多。
 
+:smile:
 
-```sequence
-title: 这是一个列子
+```flow
 
 
 ```

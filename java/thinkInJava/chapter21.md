@@ -130,3 +130,102 @@ t.start();
 - 后台线程在不执行 finally 子句的情况下就会退出。当最后一个非后台线程终止时，非后台线程会突然终止， JVM 会关闭所有所有的后台线程，而不会出现任何你希望的退出方式。
 
 ### 编码的变体
+- 在线程的构造函数中调用 start() 方法。
+```java
+public class SimpleThread extends Thread{ // 继承类
+    SimpleThread(){
+        start(); //当外部使用 new SimpleThread() 时，就开始启动线程。
+    }
+}
+
+public SelfManage implements Runnable{ // 实现接口
+    private Thread t = new Thread(this);
+    public SelfManage(){
+        t.start();
+    }
+}
+
+//在内部类中封装： 略。
+```
+
+### 捕获异常 P<sub>672</sub>
+Thread.UncaughtExceptionHandler 允许在每一个 Thread 对象上附着一个异常处理器。
+- Thread.UncaughtExceptionHandler.uncaughtException() 会在线程因未捕获的异常而临近死亡的时候而被调用。
+    ```java
+    class HandlerThreadFactory implements ThreadFactory {
+
+        @Override
+        public Thread newThread(Runnable r) {
+            Thread t = new Thread(r);
+            t.setUncaughtExceptionHandler(new MyUncaughtExceptionHandler());
+            return t;
+        }
+    }
+    public class CaptureUncaughtException {
+        public static void main(String[] args) {
+            ExecutorService service = Executors.newCachedThreadPool(new HandlerThreadFactory());
+            service.execute(new ExceptionThread());
+        }
+    } //冷
+    ```
+
+## 共享资源
+- Java 的线程机制是抢占式的，所以在任何非原子性操作的地方都会失去对资源的使用。
+```java
+    public int nextInt() { // 可以添加 synchronize  关键字来避免多个任务同时进入
+        ++ currentEvent; // Danger, The use of cpu maybe lost 
+        ++ currentEvent;
+        return currentEvent;
+    }
+```
+
+### 解决资源共享
+对于并发，需要以某种方式来防止两个任务同时访问同一个资源。
+- 采用序列化资源的方案，在代码前面加上一条锁语句。
+- Java 以关键字 synchronize 防止资源冲突提供支持。
+    - 要控制对资源的访问，先得把他包装到一个对象。然后把所要访问这个资源的方法标记为 synchronize。
+- 所有对象都自动含有单一的锁（监视器）。在对象上调用任意的 synchronize 标记的方法时，此对象会被枷锁，这时该对象上的其他 synchronize 方法。
+
+### 显示使用 Lock 对象
+Lock 对象必须被显示的创建、锁定和释放。<br>
+ReentrantLock ： 允许尝试获取锁，但是最终未能获取到锁。这样就如果获取不到锁就可以先去执行其他任务。
+```java
+public class MutexEventGenerator extends IntGenerator {
+    private int currentEvent = 0;
+    private Lock lock = new ReentrantLock();
+    @Override
+    public int nextInt() {
+        lock.lock();
+        try {
+            ++ currentEvent;
+            ++ currentEvent;
+            return currentEvent; // return 语句一定要在 try 里面，以确保 unlock 不会过早发生，而将数据暴露给第二个任务。
+        }finally {
+            lock.unlock();
+        }
+    }
+
+    public static void main(String[] args) {
+        EventChecker.test(new MutexEventGenerator());
+    }
+}
+```
+-  也可使用 lock.tryLock() 方法获取锁，获取到锁时会返回一个 true。可以添加时间参数，以尝试获取锁一段时间。
+```java
+    public void tryLockMethod(){
+        boolean captured = lock.tryLock(); 
+        try{
+            // do something ……         
+            }finnally{
+                if(captured){
+                    lock.unlock();
+                }
+            }
+    }
+```
+
+### [原子性与易变性](com/yhj/chapter21/concurrency/AtomicityTest.java)
+- 原子性：一但操作开始，一定可以在上下文发生切换之前执行完成。
+- 原子操作可由线程机制来保证其不可中断，专家级的程序员可以利用这一点来编写无锁的代码。
+- 同步机制强制在处理器系统中，一个任务做出的修改必须应用中是可视的。
+    - volatile 关键字确保了可视性。
