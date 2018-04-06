@@ -291,10 +291,12 @@ synchronized 块必须给定一个在其上进行同步对象，最合理的方�
     3. 等待某个输入/输出完成。
     4. 任务视图在某个对象上调用其同步控制方法，但是对象锁不可用，因为另外一个任务已经获取了这个锁。
 - suspend() 和 resume() 可能会造成死锁，已经废弃。
-- stop() 不会释放已经获取的锁，而且如果线程处于不一致的状态，其他任务也可以在这种状态下浏览并修改它们。
+- stop() 不会释放已经获取的锁，而且如果线程处于不一致的状态，其他任务也可以在这种状态下浏览并修改它们。允许在线程 A 中调用线程 B 的 stop 方法。
 
 ### 中断
-[知乎问题](https://www.zhihu.com/question/41048032?sort=created)<br>
+[知乎问题](https://www.zhihu.com/question/41048032?sort=created): 介绍了 interrupt 和 interrupted 。
 - Thread 类包含 interrupt() 方法，因此可以终止一个阻塞的任务。
 - Executor 上调用 shutdownNow()，会发送一个 interrupt() 调用给它启动的所有线程。
-- Executor 使用 submit 提交，返回一个 Furtre<?>，对其调用 cancel() 并传入参数 true 则会单独取消某一个线程。
+- Executor 使用 submit 提交，返回一个 Furtre<?>，对其调用 cancel() 并传入参数 true 则会单独取消某一个线程。[实例代码](./src/com/yhj/chapter21/concurrency/Interrupting.java)<br>
+
+> **注意：** 不能中断正在试图获取 synchronized 锁或试图执行 I/O 的线程。第 18 章，介绍的  nio 类提供了更人性化的支持，被阻塞的 nio 通道会自动的响应中断。
