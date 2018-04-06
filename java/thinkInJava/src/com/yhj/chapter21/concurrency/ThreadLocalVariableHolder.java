@@ -6,8 +6,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-class Accessor implements Runnable {
-    private final int id;
+class  Accessor implements Runnable{
+    private final int id ;
 
     public Accessor(int id) {
         this.id = id;
@@ -15,33 +15,30 @@ class Accessor implements Runnable {
 
     @Override
     public void run() {
-        while (!Thread.currentThread().isInterrupted()) {
-            ThreadLocalVariableHolder.increment();
-            System.out.println(this);
-            Thread.yield();
-        }
+       while (! Thread.currentThread().isInterrupted()){
+           ThreadLocalVariableHolder.increment();
+           System.out.println(this + " \t" + ThreadLocalVariableHolder.get());
+           Thread.yield();
+       }
     }
 
     @Override
     public String toString() {
-        return "#:\t" + this.id + "\t" + ThreadLocalVariableHolder.get();
+        return  "\t" + this.id + "\t";
     }
 }
-
 public class ThreadLocalVariableHolder {
-    private static ThreadLocal<Integer> value = new ThreadLocal<Integer>() {
+    private static ThreadLocal<Integer> value = new ThreadLocal<Integer>(){
         private Random random = new Random(47);
-
-        protected synchronized Integer initialValue() {
+        protected synchronized Integer initialValue(){
             return random.nextInt(1000);
         }
     };
 
-    public static void increment() {
-        value.set(value.get() + 1);
+    public static void increment(){
+        value.set(value.get()+1);
     }
-
-    public static Integer get() {
+    public static Integer get(){
         return value.get();
     }
 
