@@ -299,4 +299,4 @@ synchronized 块必须给定一个在其上进行同步对象，最合理的方�
 - Executor 上调用 shutdownNow()，会发送一个 interrupt() 调用给它启动的所有线程。
 - Executor 使用 submit 提交，返回一个 Furtre<?>，对其调用 cancel() 并传入参数 true 则会单独取消某一个线程。[实例代码](./src/com/yhj/chapter21/concurrency/Interrupting.java)<br>
 
-> **注意：** 不能中断正在试图获取 synchronized 锁或试图执行 I/O 的线程。第 18 章，介绍的  nio 类提供了更人性化的支持，被阻塞的 nio 通道会自动的响应中断。
+> **注意：** 不能中断正在试图获取 synchronized 锁或试图执行 I/O 的线程。第 18 章，介绍的  nio 类提供了更人性化的支持，被阻塞的 nio 通道会自动响应中断。
