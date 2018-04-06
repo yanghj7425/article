@@ -224,8 +224,52 @@ public class MutexEventGenerator extends IntGenerator {
     }
 ```
 
-### [原子性与易变性](./com/yhj/chapter21/concurrency/AtomicityTest.java)
+### 原子性与易变性
 - 原子性：一但操作开始，一定可以在上下文发生切换之前执行完成。
 - 原子操作可由线程机制来保证其不可中断，专家级的程序员可以利用这一点来编写无锁的代码。
 - 同步机制强制在处理器系统中，一个任务做出的修改必须应用中是可视的。
-    - volatile 关键字确保了可视性。
+    - volatile 关键字确保了可视性。<br>
+
+[实例代码](./src/com/yhj/chapter21/concurrency/AtomicityTest.java)<br>
+>程序中 `public int getValue()` 方法，return i 是原子操作，但是缺少同步，使其可以在不稳定的情况下被读取。此外变量 i 也不是 volatile 的，也存在可视性的问题。getValue 方法和 envnIncrement 方法必须是 synchronized 的。
+
+### 原子类
+Java SE5 引入了如 AtomicInteger、AtomicLong、AtomicRefrence等特殊的原子性变量类。
+
+### 临界区
+**临界区：** 防止多个线程同时访问方法内部的部分，而不是防止访问整个方法。
+- 使用 synchronized 关键字定义。
+```java
+synchronized(syncObject){
+    // This code can be accessed by only one task at a time 
+}
+```
+- 使用同步控制块可以使多任务访问对象的时间性能得到显著提高。
+
+### 在其他对象上同步
+synchronized 块必须给定一个在其上进行同步对象，最合理的方式使，使用其方法正在被调用的对象： synchronized(this)。
+
+> 两个任务可以同时进入同一个对象，只要这个对象上的方法使在不同的锁上同步即可：
+[实例代码](./src/com/yhj/chapter21/concurrency/SyncObject.java)
+```java
+ public synchronized void f() { //在 this 上同步
+        for (int i = 0; i < 5; i++) {
+            System.out.println("f()");
+            Thread.yield();
+        }
+    }
+
+    public void g() {
+        synchronized (syncObject) {  // 在  syncObject 上同步
+            for (int i = 0; i < 5; i++) {
+                System.out.println("g()");
+                Thread.yield();
+            }
+        }
+    }
+```
+
+### 线程本地存储
+防止任务在共享资源上产生冲突的第二种方式使根除变量共享。线程本地存储是一种自动化的机制，可以为使相同变量的每个不同线程都创建不同的存储空间。
+[实例代码](./src/com/yhj/chapter21/concurrency/ThreadLocalVariableHolder.java)。
+-创建 ThreadLocal 时只能通过 get() 和 set() 来访问该对象与线程关联的副本内容。
