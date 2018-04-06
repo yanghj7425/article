@@ -224,7 +224,7 @@ public class MutexEventGenerator extends IntGenerator {
     }
 ```
 
-### [原子性与易变性](com/yhj/chapter21/concurrency/AtomicityTest.java)
+### [原子性与易变性](./com/yhj/chapter21/concurrency/AtomicityTest.java)
 - 原子性：一但操作开始，一定可以在上下文发生切换之前执行完成。
 - 原子操作可由线程机制来保证其不可中断，专家级的程序员可以利用这一点来编写无锁的代码。
 - 同步机制强制在处理器系统中，一个任务做出的修改必须应用中是可视的。
