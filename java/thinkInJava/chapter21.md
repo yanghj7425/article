@@ -1,4 +1,4 @@
-# <center> 第21章 并发 </center> #
+# <center> 第21章 并发 </center> 
 > 用并发解决的问题大体上可分为“速度”和“设计可管理性”两种。
 
 ## 并发的多面性
@@ -300,3 +300,51 @@ synchronized 块必须给定一个在其上进行同步对象，最合理的方�
 - Executor 使用 submit 提交，返回一个 Furtre<?>，对其调用 cancel() 并传入参数 true 则会单独取消某一个线程。[实例代码](./src/com/yhj/chapter21/concurrency/Interrupting.java)<br>
 
 > **注意：** 不能中断正在试图获取 synchronized 锁或试图执行 I/O 的线程。第 18 章，介绍的  nio 类提供了更人性化的支持，被阻塞的 nio 通道会自动响应中断。
+
+#### 互斥阻塞
+在一个对象上调用 synchronized 方法，而这个锁已经被其他对象获得，那么这个任务将被挂起，直至该锁可以获得。
+- 同一个互斥可以被一个任务多次获得。[实例代码](./src/com.yhj.chapter21.concurrency.MultiLock.java)
+    - 由于任务第一次调用时已经 synchronized 方法已经获得了 this 对象的锁。当调用其他 synchronized 方法时，这个任务已经持有锁了。
+- interrupt 可以打断被互斥所阻塞的调用。
+    - 只要任务以不可中断的方式阻塞，就有锁住程序的可能。在 ReentrantLock 上阻塞的任务具有可以被中断的能力。(P<sub>700</sub>)
+    
+### 检查中断
+- 当在线程上调用 interrupt 方法时，中断发生的唯一时刻时在任务进入到阻塞操作中，或者已经在阻塞操作中。
+    - 除非不可中断的 synchronized 方法或 I/O 阻塞。
+- 通过 interrupt() 设置中断状态，在 run() 方法中 `while(! Thread.interrupted()) {}` 检测中断标志。
+    - interrupted() 不仅可以检测 interrupt() 是否被调用，还可以清除中断状态。
+        - 中断状态可以确保并发结构不会就某个任务被中断这个问题通知你两次。
+- 设计来响应 interrupt() 的类必须建立某种策略，来确保保持一至的特性。通常意味着所有需要清理的对象后面都必须紧跟` try-finally `子句，从而使得无论 run() 如何退出，清理都会发生。
+    - 后台(daemon) 进程有例外，其可能会被突然终止。
+
+## 线程之间的协作
+当任务协作时，关键的问题时握手。使用了相同的基础特性： 互斥，来实现。互斥能确保只有一个任务可以响应某个信号，这样就可以根除某些竞争条件。在互斥之上，提供了另一种途径：将自身挂起。
+- 使用 Object 的 wait 和 notify 方法安全实现。
+
+### wait() 和 notify() 
+wait() 使你可以等待某个条件发生变化，而改变这个条件已经超出当前方法的控制能力。
+- 只有 notify/notifyAll 或时间到期，任务才会被唤醒。
+- 只能在同步块里面调用 wait()、notify、notifyAll() 方法，否则编译期可以，运行时将抛出 IllegalMonitorStateException 异常。
+- 调用 sleep() 和 yeild() 的时候，不会释放资源锁。
+[实例代码](./src/com/yhj/chapter21/concurrency/YieldLock.java)<br>
+
+### notify() 和 notifyAll() 
+- notifyAll() 因某个特定的锁被调用时，只有等待这个锁的任务才会被唤醒。[实例代码](./src/com/yhj/chapter21/concurrency/NotifyVsNotifyAll.java)
+
+### 生产者和消费者
+Restaurant 是 WaitPerson 和 Chef 的焦点，它们都必须知道在为哪一个 Restaurant 工作。[实例代码](./src/com/yhj/chapter21/concurrency/Restaurant.java)
+
+#### 显示的 Lock 和 Condition 对象
+可以使用 Java SE5 的 Condition 来互斥挂起基本类。
+- await() 来挂起一个类。
+- singalAll()、singal() 来唤醒在这个 Condition 上挂起的任务。
+```java
+    Lock lock = new ReentrantLock();
+    Condition condition = lock.newCondition();  //获得对象
+
+    condition.await();// 挂起
+
+    condition.singal();// 唤醒
+
+```
+对于每一个 lock() 的调用都必须紧跟一个 try-finally 子句。
