@@ -174,6 +174,21 @@ public class Foo {
 </beans>
 
 ```
+当一个类被引用，类型匹配就可以出现。当使用简单类的时候，比如 `<value>true</value>`，没有类型值得帮助 Spring 不能通过类型匹配：
+```java
+package examples;
+public class ExampleBean {
+// Number of years to calculate the Ultimate Answer
+    private int years;
+    // The Answer to Life, the Universe, and Everything
+    private String ultimateAnswer;
+    public ExampleBean(int years, String ultimateAnswer) {
+        this.years = years;
+        this.ultimateAnswer = ultimateAnswer;
+    }
+}
+
+```
 如果明确指定了构造器参数的类型，容器可以通 type 属性类类型匹配一些简单类型：
 ```xml
 <bean id="exampleBean" class="examples.ExampleBean">
@@ -188,3 +203,211 @@ public class Foo {
     <constructor-arg index="1" value="42"/>
 </bean>
 ```
+
+### 基于 setter 的赖注入
+基于 setter 的依赖注入是通过在 bean 调用无参构造器或者无参数的静态工厂方法实例化你的 bean 之后调用 setter 方法。<br>
+下面的例子展示了你可以单纯的通过 setter 注入来实现依赖注入：
+```java
+public class SimpleMovieLister {
+    // the SimpleMovieLister has a dependency on the MovieFinder
+    private MovieFinder movieFinder;
+    // a setter method so that the Spring container can inject a MovieFinder
+    public void setMovieFinder(MovieFinder movieFinder) {
+        this.movieFinder = movieFinder;
+    }   
+// business logic that actually uses the injected MovieFinder is omitted...
+}
+```
+ApplicationContext 对 bean 的管理支持构造器注入和 setter 注入。也可以通过构造器注入容器内已经存在的依赖。
+- 在 setter 方法中使用 @Required 注解可以使属性成为必须的依赖。
+- Spring 推荐使用构造器注入它使一个实现的应用组件作为一个不可变的对象并确保必须的依赖不为空。
+- setter 注入使可以选择的依赖项的首选。
+    - 它可以设置一个默认值。
+    - setter  注入使对象可以重新配置或者重新注入。
+
+### 依赖解析过程
+容器会这样执行去解决依赖问题：
+- ApplicationContext 会被配置元数据描述的 bean 创建和初始化。配置元数据可以通过 xml、Java code、或者注解。
+- 对于每一个 bean 它的依赖关系通过属性、构造参数、静态工厂方法的参数表达。当这个 bean 被实际创建的时候这些依赖关键会被提供给 bean。
+- 每一个属性或构造器参数是被实际定义的值设置的，或者是引用容器里面其他的 bean。
+- 每一个属性或者构造器参数会从指定的格式转变回属性或构造器参数实际的类型。默认的，Spring 提供默认的值转变从一个 String 到一个编译类型，比如：int、long、String、boolean等等。
+> **循环依赖**<br>
+使用构造器注入的时候会产生一个循环依赖的场景：A 依赖 B，B 依赖 A。如果这样配置 Spring 在运行时会抛出一个 BeanCurrentlyInCreationException。<br>
+**解决办法：** 使用 setter 注入， 虽然不推荐，但是使用 setter 注入可以配置一个循环依赖。
+
+- spring 的 bean 默认采用预实例化和单例的方式：
+    - 在这个 bean 实际被实例化之前预先分配一些时间和空间，这样可以发现一些 ApplicationContext 配置过程中的问题。可以改变默认的行为 lazy-initialize 而不是 pre-instantiated；或者改变作用域，为一个非单例的。
+
+#### 依赖注入的列子
+- xml 配置的元数据基于 setter 方法的注入：<br>
+    xml 实例：<br>
+    ```xml
+    <bean id="exampleBean" class="examples.ExampleBean">
+        <!-- setter injection using the nested ref element -->
+        <property name="beanOne">
+            <ref bean="anotherExampleBean"/>
+        </property>
+        <!-- setter injection using the neater ref attribute -->
+        <property name="beanTwo" ref="yetAnotherBean"/>
+        <property name="integerProperty" value="1"/>
+    </bean>
+    <bean id="anotherExampleBean" class="examples.AnotherBean"/>
+    <bean id="yetAnotherBean" class="examples.YetAnotherBean"/>
+
+    ```
+    java 实例: <br>
+
+    ```java
+        public class ExampleBean {
+            private AnotherBean beanOne;
+            private YetAnotherBean beanTwo;
+            private int i;
+            public void setBeanOne(AnotherBean beanOne) {
+                this.beanOne = beanOne;
+            }
+            public void setBeanTwo(YetAnotherBean beanTwo) {
+                this.beanTwo = beanTwo;
+            }
+            public void setIntegerProperty(int i) {
+                this.i = i;
+            }
+        }
+
+    ```
+- xml 配置的元数据基于构造器的注入：<br>
+    xml 实例：<br>
+    ```xml
+        <bean id="exampleBean" class="examples.ExampleBean">
+        <!-- constructor injection using the nested ref element -->
+            <constructor-arg>
+                <ref bean="anotherExampleBean"/>
+            </constructor-arg>
+            <!-- constructor injection using the neater ref attribute -->
+            <constructor-arg ref="yetAnotherBean"/>
+            <constructor-arg type="int" value="1"/>
+        </bean>
+        <bean id="anotherExampleBean" class="examples.AnotherBean"/>
+        <bean id="yetAnotherBean" class="examples.YetAnotherBean"/>
+    ```
+    java 实例：
+    ```java
+        public class ExampleBean {
+            private AnotherBean beanOne;
+            private YetAnotherBean beanTwo;
+            private int i;
+            public ExampleBean(
+            AnotherBean anotherBean, YetAnotherBean yetAnotherBean, int i) {
+                this.beanOne = anotherBean;
+                this.beanTwo = yetAnotherBean;
+                this.i = i;
+            }
+        }
+
+    ```
+- 使用静态工厂方法注入：
+    - 静态工厂方法使用时，可以用 `<constructor-arg>` 元素来指定参数。<br>
+    
+    xml 实例：
+    ```xml
+        <bean id="exampleBean" class="examples.ExampleBean" factory-method="createInstance">
+            <constructor-arg ref="anotherExampleBean"/>
+            <constructor-arg ref="yetAnotherBean"/>
+            <constructor-arg value="1"/>
+        </bean>
+        <bean id="anotherExampleBean" class="examples.AnotherBean"/>
+
+    ```
+    java 实例：
+    ```java
+        public class ExampleBean {
+        // a private constructor
+            private ExampleBean(...) {
+            //...
+            }
+            // a static factory method; the arguments to this method can be
+            // considered the dependencies of the bean that is returned,
+            // regardless of how those arguments are actually used.
+            public static ExampleBean createInstance (
+                AnotherBean anotherBean, YetAnotherBean yetAnotherBean, int i) {
+                ExampleBean eb = new ExampleBean (...);
+                // some other operations...
+                return eb;
+            }
+        }
+
+    ```
+
+## 依赖配置细节
+你可以定义属性和构造参数引用其他被管理的 bean。在 xml 的配置中，支持`<property/>` 和 `<constructor-arg/>` 元素来支持这个功能。<br>
+你可以配置一个 java.util.Properties 实例：
+```xml
+<bean id="mappings"
+    class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <!-- typed as a java.util.Properties -->
+    <property name="properties">
+        <value>
+        jdbc.driver.className=com.mysql.jdbc.Driver
+        jdbc.url=jdbc:mysql://localhost:3306/mydb
+        </value>
+    </property>
+</bean>
+```
+- Spring 容器通过 PropertyEditor 机制，转变 `<value/>` 元素内部的文本到一个 java.util.Properties 实例。 Spring 团队推荐使用嵌套 `<value/>` 元素来覆盖 value 属性。
+
+### idref 元素
+ idref 元素是一个简单的错误保证方式；通过其他在容器里面 bean 的 id 来引用元素到一个`<constructor-arg/>` 或 `<property/>` 元素。<br>
+ xml 实例:
+ ```xml
+    <bean id="theTargetBean" class="..."/>
+    <bean id="theClientBean" class="...">
+        <property name="targetName">
+            <idref bean="theTargetBean"/>
+        </property>
+    </bean>
+ ```
+ 上面的实例和下面的实例是完全等价的：
+ ```xml
+    <bean id="theTargetBean" class="..." />
+    <bean id="client" class="...">
+        <property name="targetName" value="theTargetBean"/>
+    </bean>
+ ```
+- 更加推荐使用 idref 标签，这个标签运行容器在发布时校验引用、名称是否确实存在。
+> **注意**<br>
+自从 4.0 beans xsd 以后 idref 元素就不提供 local 属性，不提供对一个常规的 bean 的引用。简单的改变已经存在的 idref local 引用为 idref bean 就可以升级为 4.0 语法。
+
+一个共同的地方(最新的和 spring 2.0)，`<idref/>` 元素带来的值是在一个拦截器里面作为 ProxyFactoryBean 被定义的。使用 `<idref/>` 元素当你用拦截器去指定拦截元素的时候会保证你不会拼写错误。
+
+### 内部 bean
+一个 `<bean/>` 元素在 `<property/>` 或者  `<constructor-arg/>` 元素内部定义，叫作内部 bean。
+```xml
+<bean id="outer" class="...">
+    <!-- instead of using a reference to a target bean, simply define the target bean inline -->
+    <property name="target">
+        <bean class="com.example.Person"> <!-- this is the inner bean -->
+            <property name="name" value="Fiona Apple"/>
+            <property name="age" value="25"/>
+        </bean>
+    </property>
+</bean>
+
+```
+- 内部类总是匿名的，随着外部类的创建而创建的。
+
+### 使用 depends-on
+depends-on 属性可以现实的强制一个或者多个 bean ，在使用了 depends-on 的这个元素初始化之前。<br>
+xml 实例,依赖单个 bean:
+```xml
+<bean id="beanOne" class="ExampleBean" depends-on="manager"/>
+<bean id="manager" class="ManagerBean" />
+```
+xml 实例，依赖多个 bean:
+```xml
+<bean id="beanOne" class="ExampleBean" depends-on="manager,accountDao">
+    <property name="manager" ref="manager" />
+</bean>
+<bean id="manager" class="ManagerBean" />
+<bean id="accountDao" class="x.y.jdbc.JdbcAccountDao" />
+```
+> **注意：**<br>
+依赖定义的 depends-on 依赖关系首先被销毁，在 bean 销毁之前。因此，depends-on 也可以控制关闭顺序。
