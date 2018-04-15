@@ -148,3 +148,43 @@ public class DefaultServiceLocator {
 
 ### 依赖注入
 依赖注入是通过定义对象来定义他们的依赖关系，这样，其他的对象就可以一起工作，只有通过构造器参数、工厂方法参数或属性设置一个对象，在对象被构造或者工厂方法返回之后。当 bean 被创建的时候，容器就会注入这些依赖。
+
+### 构造器注入
+构造器的注入是通过容器调用一个有参数的构造器完成的，每一个参数代表一个依赖关系。
+
+#### 构造器参数解析
+构造器使用参数类型来匹配当前的构造器。如果在构造器参数定义上没有歧义，在 bean 被构建的时候将按照构造器参数的顺序实例化：
+```java
+package x.y;
+public class Foo {
+    public Foo(Bar bar, Baz baz) {
+    // ...
+    }
+}
+```
+没有歧义存在，假设 Bar 和 Baz 不存在继承关系。就可以像下面这样配置：
+```xml
+<beans>
+    <bean id="foo" class="x.y.Foo">
+        <constructor-arg ref="bar"/>
+        <constructor-arg ref="baz"/>
+    </bean>
+    <bean id="bar" class="x.y.Bar"/>
+    <bean id="baz" class="x.y.Baz"/>
+</beans>
+
+```
+如果明确指定了构造器参数的类型，容器可以通 type 属性类类型匹配一些简单类型：
+```xml
+<bean id="exampleBean" class="examples.ExampleBean">
+    <constructor-arg type="int" value="7500000"/>
+    <constructor-arg type="java.lang.String" value="42"/>
+</bean>
+```
+使用下标属来明确指定构造器的参数：
+```xml
+<bean id="exampleBean" class="examples.ExampleBean">
+    <constructor-arg index="0" value="7500000"/>
+    <constructor-arg index="1" value="42"/>
+</bean>
+```
