@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html ng-app='myApp'>
+<head>
+	<title>chapter2.1</title>
+	<script type="text/javascript" src="js/angular.min.js"></script>
+	<script type="text/javascript" src="js/chapter2.1.js"></script>
+</head>
+<body>
+	<div ng-controller="myController as c">
+		hello
+		<h1>{{ c.name }}</h1>
+		<p>{{ c.message }}</p>
+		<button ng-click='c.funClick("hello")'>Click Me !</button>
+	</div>
+
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html ng-app='myApp'>
+
+<head>
+    <title>nested Controllers</title>
+    <script type="text/javascript" src="js/angular.min.js"></script>
+    <script type="text/javascript" src="js/chapter2.6.js"></script>
+</head>
+
+<body>
+    <div ng-controller='parentController'>
+        What controller am I ? {{ parentVariable}} <button ng-click='parentClick()'>parent</button>
+        <div ng-controller='childrenController'>
+            What controller am I ? {{ childrenVariable }}  === {{parentVariable}}
+            <button ng-click='childrenClick()'>Click me</button>
+        </div>
+    </div>
+</body>
+
+</html>

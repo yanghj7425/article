@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html ng-app="myDemoApp">
+
+<head>
+    <title>chapter2</title>
+    <script type="text/javascript" src="js/angular.min.js"></script>
+    <script type="text/javascript" src="js/chapter1.2.js"></script>
+</head>
+
+<body ng-class="{'started':hasStarted}" ng-cloak>
+	<div ng-controller='demoController as vm'>
+		<ul>
+			<li ng-repeat="msg in vm.message">{{ msg }}</li>
+		</ul>
+		
+	</div>
+</body>
+
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+
+<head>
+    <title>chapter3.1</title>
+</head>
+<style type="text/css">
+.lay {
+    float: left;
+    width: 200px;
+    height: 300px;
+}
+</style>
+
+<body>
+    <div ng-controller="ctrl as c" style="background-color: #999999;" class="lay">
+        text:
+        <input type="text" name="text" ng-model="c.textInput.value" /> 
+        	{{ c.textInput.value +5 }}
+    </div>
+    <div ng-controller="ctrl as c" style="background-color: #f7f7f7" class="lay">
+    	number: 
+    	<input type="number" name="text" ng-model="c.numberInput.value" />
+ 		{{ c.numberInput.value + 5}}
+
+    </div>
+</body>
+<script type="text/javascript" src="js/angular.min.js"></script>
+<script type="text/javascript" src="js/chapter3.1.js"></script>
+
+</html>

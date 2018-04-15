@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+
+<head>
+    <title>chapter2.2</title>
+    <script type="text/javascript" src="js/angular.min.js"></script>
+    <script type="text/javascript" src="js/chapter2.2.js"></script>
+</head>
+
+<body ng-controller='samepleController as c'>
+	<p> scope-> name : {{ name }}</p>
+	<p>{{c.msg}}</p>
+
+controller ->msg :{{ msg }}
+    <button value='{{ c.msg }}' ng-click='c.funClick(c.msg)'> Click Me</button>
+	
+</body>
+
+</html>
