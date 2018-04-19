@@ -1,11 +1,19 @@
 <!DOCTYPE html>
-<html>
-<head>
-	<title>chapter3.2 ngif</title>
-</head>
-<body>
+<html ng-app="myApp">
 
+<head>
+    <title>chapter3.2 ngif</title>
+</head>
+
+<body>
+    <div ng-controller='myAppController'>
+    	<input type="text" name="text" ng-model="num">
+        {{text}} : {{selectFruit}} {{fruit}}
+        <select style="width: 100px;height: 30px" ng-model="selectedFruitNgOptions" ng-options="f.label disable when f.value < num for f in fruit" ng-change="change(1)">
+        </select>
+    </div>
 </body>
 <script type="text/javascript" src="js/angular.min.js"></script>
 <script type="text/javascript" src="js/chapter3.2.js"></script>
+
 </html>
