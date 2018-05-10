@@ -412,12 +412,28 @@ xml 实例，依赖多个 bean:
 > **注意：**<br>
 依赖定义的 depends-on 依赖关系首先被销毁，在 bean 销毁之前。因此，depends-on 也可以控制关闭顺序。
 
-## 方法注入
+### 方法注入
 在大多数引用场景，容器里面的 bean 都是单例的。可以通过依赖关系注入，但是当两个 bean 作用域不一样的时候：一个单例需要一个非单例的 bean，此时单例 A 将在创建的时候添加非单例的 B 的依赖。但是 A 只会在创建的时候被调用，并且实例化 B。这样 B 就不能及时得到一个新的实例。<br>
 一个解决方法是放弃一些反转控制特性，可以让 A 通过实现 ApplicationContextAware 接口，使 bean 让容器保持警觉，这样通过 getBean() 方法获取到的 bean 就都是新的实例了。
 
-### 查找方法注入
+#### 查找方法注入
 查找方法注入是一种能让容器覆盖当前容器内管理的 bean 的方法的能力。Spring 框架从 CGLIB　库使用字节码动态生成一个子类覆盖这个方法。<br>
 
 **注意：**
 - 为了使动态子类工作，Spring 容器将子类化的 bean 不能是 final 的，将要覆盖的方法也不能是 final 的。
+
+## bean 域
+
+创建一个 bean 的定义时，就创建了一个通过 bean 的定义创建实例的处方。bean 的定义是一个处方这是一个重要的概念，因为着意味着：作为一个类，你可以从一个处方中创建多个对象的实例。<br>
+你不仅可以控制被插入对象的个别的 bean 的定义及其各种依赖关系和配置的值，而且对象的域从一特殊的 bean 定义创建。这种方式时非常有用和高度灵活的，你可以通过配置来替代 class 的水平来选择你所创建对象的作用域。Beans 可以被定义和发布在多个作用域中：Spring Framework 提供 7 种作用域，5 种是可用的如果你使用 ApplicationContext。
+ ### 作用域
+ |     作用域      |                 描述                |
+ | -------------- |-------------------------------------|
+ |  singleton     | 默认的, IOC 容器内只有一个实例对象    |
+ |  prototype     | 对任意数量的 bean 定义               |
+ |  request       | 对于每一个 HTTP 请求都创建一个单独的  bean。只有上下文是一个Spring ApplicationContext 的 web-aware，时才是有效的|
+ |  session       | bean 定义在 session 的生命周期中,只有上下文是一个Spring ApplicationContext 的 web-aware，时才是有效的|
+ |  globalSession |  global HTTP session 的生命周期有一个单独的 bean 定义。典型的是，它只在使用 Protlet 的 web 中才有定义。只有上下文是一个Spring ApplicationContext 的 web-aware，时才是有效的|
+ |  application   | ServletContext 的生命周期有一个单独的 bean 定义。只有上下文是一个Spring ApplicationContext 的 web-aware，时才是有效的|
+ |  websocket     | WebSocket 的生命周期是一个单独的 bean 定义。只有上下文是一个Spring ApplicationContext 的 web-aware，时才是有效的|
+
