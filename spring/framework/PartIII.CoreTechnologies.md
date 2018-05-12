@@ -4,12 +4,12 @@
 * [ Ioc 容器 ](#IoC容器)
     * [Spring IOC 容器和 Java bean 的介绍]()
 * [容器综述](#容器综述)
-    * [配置元数据](#configMetaData)
-    * [实例化一个容器](#InstantiatingContainer)
-    * [合并基于 XML 配置的元数据](#importXML) 
-    * [容器的使用](#usageContainer)
-* [Bean 的概念](#beanConcept)
-    * [通构造器实例化](#instantiatingWithConstructor)
+    * [配置元数据](#配置元数据)
+    * [实例化一个容器](#实例化一个容器)
+    * [合并基于 XML 配置的元数据](#合并基于xml配置的元数据) 
+    * [容器的使用](#容器的使用)
+* [Bean 的概念](#bean的概念)
+    * [通构造器实例化](#通构造器实例化)
    
 
 
@@ -32,7 +32,7 @@ org.springframework.context.ApplicationContext 接口代表了 Spring 的 Ioc �
 在大多数应用的场景，显示的用户代码对于一个实例或者多个实例不是必须要的。例如，在 web 应用场景中，简单的 8 行样本文件 web 描述文件在 web.xml 中已经是足够的。如果你正在用 Spring Tool Suite 这样的开发环境这样的样本配置文件可以可以在点几下鼠标或者少量的按键后容易的被创建。<br>
 在 ApplicationContext 被创建和初始化之后，你的应用类和配置数据将被整合，你拥有一个配置完整和可以执行的系统和应用。
 
-### <span id="configMetaData">配置元数据</span>
+### 配置元数据
 Spring 的 IOC 容器需要一个格式的来配置元数据；这个元数据代表你作为一个应用开发者告诉 Spring 容器怎样在应用中实例化、配置和集成对象。
 
 **注意**<br>
@@ -54,7 +54,7 @@ Spring 的 IOC 容器需要一个格式的来配置元数据；这个元数据�
 ApplicationContext context = new ClassPathXmlApplicationContext("services.xml", "daos.xml");
 ```
 
-### <span id="importXML"> 合并基于 XML 配置的元数据 <span>
+###  合并基于XML配置的元数据
 可以使用 ApplicationContext 构造器从所有的 XML 碎片（多个 XML 文件）中加载 bean 的定义。构造器可以持有多个 Resources 路径，就像上面这样。另外也可以使用 `<import/>` 元素:
 
 ```xml
@@ -74,7 +74,7 @@ ApplicationContext context = new ClassPathXmlApplicationContext("services.xml", 
 如果使用绝对路径：比如，`file:c:/config.xml`。 一般来说：最好保持一个对于这些资源路径的相对引用，可以通过`${}`占位符，JVM 在运行时解析属性。 
 
 
-### <span id="usageContainer">容器的使用</span>
+### 容器的使用
 Application 使你可以读到 bean 的定义和访问他们通过下面的方式：
 ```java
 // create and configure beans
@@ -86,7 +86,7 @@ List<String> userList = service.getUsernameList();
 
 ```
 
-## <span id="beanConcept"> Bean 的概念 </span>
+## Bean的概念
 容器的 bean 被绑定元数据创建，例如，xml 里面的 `<bean/>` 定义的。在容器内部这些 bean 被定义为一个包含元数据的 BeanDefinition 对象，通常包含以下信息：
 - 一个指定的包名：通常定义一个指定的实现类 bean。
 - bean 的行为配置元素，bean 在容器里面的状态（作用域、生命周期回掉 等等）。
@@ -104,7 +104,7 @@ List<String> userList = service.getUsernameList();
 > 这样就有三个名称指向同一个对象。
 
 
-### <span id="instantiatingWithConstructor"> 通过构造器实例化 </span>
+### 通过构造器实例化
 
 通过默认构造器实例化 bean ：
 ```xml
