@@ -225,7 +225,7 @@ public class ExampleBean {
 
 ### 基于 setter 的赖注入
 基于 setter 的依赖注入是通过在 bean 调用无参构造器或者无参数的静态工厂方法实例化你的 bean 之后调用 setter 方法。<br>
-下面的例子展示了你可以单纯的通过 setter 注入来实现依赖注入：
+下面的例子展示了你可以单纯的通过 setter 注入来实现依赖注入：   
 ```java
 public class SimpleMovieLister {
     // the SimpleMovieLister has a dependency on the MovieFinder
