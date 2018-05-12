@@ -5,14 +5,15 @@
 | ------| ------|
 |yanghj7425|1501587673@qq.com|
 ---
-For each friends, If you are willing to you can write down your information below . And great thanks for you.<br>
-<center>
 
-![][foryou]
+|||
+|----|---|
+|For each friend, If you are willing to you can write down your information below. And great thanks for you.| ![][foryou] |
 
-</center>
 
----
+
+
+
 | contributor| Email|
 |---------| -------- |
 |Andrewzhong| |
