@@ -6,7 +6,7 @@
 |yanghj7425|1501587673@qq.com|
 ---
 
-|||
+|<center>hope</center>||
 |----|---|
 |For each friend, If you are willing to you can write down your information below. And great thanks for you.| ![][foryou] |
 
