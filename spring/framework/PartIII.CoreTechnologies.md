@@ -1,5 +1,20 @@
-@(Spring)[Part III. What’s New in Spring Framework 4.x]
-#Part III. Core Technologies
+# Part III. Core Technologies
+
+<!--  catalog    -->
+* [ Ioc 容器 ](#IoC容器)
+    * [Spring IOC 容器和 Java bean 的介绍]()
+* [容器综述](#容器综述)
+    * [配置元数据](#configMetaData)
+    * [实例化一个容器](#InstantiatingContainer)
+    * [合并基于 XML 配置的元数据](#importXML) 
+    * [容器的使用](#usageContainer)
+* [Bean 的概念](#beanConcept)
+    * [通构造器实例化](#instantiatingWithConstructor)
+   
+
+
+<!-- catalog end -->
+
 
 这部分的参考文档覆盖的所有技术，都是Spring框架的组成部分。
 其中最主要的是Spring框架中的反转控制（IOC）容器。Spring框架的IoC容器的彻底的处理是紧随其后的是Spring的全面覆盖的面向方面编程(aop)技术。Spring框架有它自己的AOP框架，它的概念是容易理解的，他成功的解决了80%的企业级AOP编程的需求。
@@ -11,13 +26,13 @@ org.springframework.beans 和 org.springframework.context 包是 Spring 框架Io
 总而言之，BeanFactory 提供了框架的配置和基础的功能，ApplicationContext 添加了更多企业级的特性。ApplicationContext 是一个 BeanFactory 的一个完美超类，它仅仅被用在这章描述 Spring 的 Ioc 容器。更多用 BeanFactory 代替 ApplicationContext 的信息，参考7.16 BeanFactory。
 
 在 Spring 中，对象在应用中主要的形式和被 IOC 容器管理叫做 Bean，一个 Bean 是一个对象，它是一个实例，一个集合和任何被 Ioc 容器管理的。另外，一个 bean 不过是在你应用中众多对象中的一个。Beans ，他们之间的依赖关系呗映射到一个配置的数据文件里面被容器使用。
-## 7.2容器总览
+## 容器综述
 org.springframework.context.ApplicationContext 接口代表了 Spring 的 Ioc 容器和负责人实例化、配置、集成上述提到的 bean。容器得到他的实例对于每一个通过读配置数据文件实例、配置、装配的对象。数据配置文件描述在 XML 文件、Java 注解、或者 Java 代码。它允许你表达你的对象然后组成你的应用并且丰富对象之间的依赖接口。<br>
 一些实现了 ApplicationContext 接口被 Spring 提供为没有内建的。在单例应用中，通常是创建一个 ClasspathXmlApplication 或者FileSystemXmlApplicationContext 实例。XML 已经形成传统的格式，为了配置的数据文件你可以指示容器使用 Java 注解或者代码作为数据元格式通过提供少量的配置文件起声明使能支持这些添加的元数据格式。<br>
 在大多数应用的场景，显示的用户代码对于一个实例或者多个实例不是必须要的。例如，在 web 应用场景中，简单的 8 行样本文件 web 描述文件在 web.xml 中已经是足够的。如果你正在用 Spring Tool Suite 这样的开发环境这样的样本配置文件可以可以在点几下鼠标或者少量的按键后容易的被创建。<br>
 在 ApplicationContext 被创建和初始化之后，你的应用类和配置数据将被整合，你拥有一个配置完整和可以执行的系统和应用。
 
-### 配置元数据
+### <span id="configMetaData">配置元数据</span>
 Spring 的 IOC 容器需要一个格式的来配置元数据；这个元数据代表你作为一个应用开发者告诉 Spring 容器怎样在应用中实例化、配置和集成对象。
 
 **注意**<br>
@@ -32,13 +47,13 @@ Spring 的 IOC 容器需要一个格式的来配置元数据；这个元数据�
         - @Import
         - @DependsOn
 
-### 实例化一个容器
+### <span id="InstantiatingContainer"> 实例化一个容器 </span>
 实例化一个 Ioc 容器是简单的，ApplicaationContext 构造器是一个实际的资源字符串允许从多种外部资源加载配置元数据，如：本地文件系统，Java ClassPath 等等。
 ```java
 ApplicationContext context = new ClassPathXmlApplicationContext("services.xml", "daos.xml");
 ```
 
-### 合并基于 XML 的配置元数据
+### <span id="importXML"> 合并基于 XML 配置的元数据 <span>
 可以使用 ApplicationContext 构造器从所有的 XML 碎片（多个 XML 文件）中加载 bean 的定义。构造器可以持有多个 Resources 路径，就像上面这样。另外也可以使用 `<import/>` 元素:
 
 ```xml
@@ -58,7 +73,7 @@ ApplicationContext context = new ClassPathXmlApplicationContext("services.xml", 
 如果使用绝对路径：比如，`file:c:/config.xml`。 一般来说：最好保持一个对于这些资源路径的相对引用，可以通过`${}`占位符，JVM 在运行时解析属性。 
 
 
-### 容器的使用
+### <span id="usageContainer">容器的使用</span>
 Application 使你可以读到 bean 的定义和访问他们通过下面的方式：
 ```java
 // create and configure beans
@@ -70,8 +85,7 @@ List<String> userList = service.getUsernameList();
 
 ```
 
-## Bean 的概念
-
+## <span id="beanConcept"> Bean 的概念 </span>
 容器的 bean 被绑定元数据创建，例如，xml 里面的 `<bean/>` 定义的。在容器内部这些 bean 被定义为一个包含元数据的 BeanDefinition 对象，通常包含以下信息：
 - 一个指定的包名：通常定义一个指定的实现类 bean。
 - bean 的行为配置元素，bean 在容器里面的状态（作用域、生命周期回掉 等等）。
@@ -89,7 +103,8 @@ List<String> userList = service.getUsernameList();
 > 这样就有三个名称指向同一个对象。
 
 
-### 通过构造器实例化
+### <span id="instantiatingWithConstructor"> 通过构造器实例化 </span>
+
 通过默认构造器实例化 bean ：
 ```xml
     <bean id="exampleBean" class="examples.ExampleBean"/>
@@ -426,7 +441,9 @@ xml 实例，依赖多个 bean:
 
 创建一个 bean 的定义时，就创建了一个通过 bean 的定义创建实例的处方。bean 的定义是一个处方这是一个重要的概念，因为着意味着：作为一个类，你可以从一个处方中创建多个对象的实例。<br>
 你不仅可以控制被插入对象的个别的 bean 的定义及其各种依赖关系和配置的值，而且对象的域从一特殊的 bean 定义创建。这种方式时非常有用和高度灵活的，你可以通过配置来替代 class 的水平来选择你所创建对象的作用域。Beans 可以被定义和发布在多个作用域中：Spring Framework 提供 7 种作用域，5 种是可用的如果你使用 ApplicationContext。
- ### 作用域
+
+
+ ### 作用域 
  |     作用域      |                 描述                |
  | -------------- |-------------------------------------|
  |  singleton     | 默认的, IOC 容器内只有一个实例对象    |
