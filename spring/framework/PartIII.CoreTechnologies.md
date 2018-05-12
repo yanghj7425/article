@@ -457,4 +457,5 @@ xml 实例，依赖多个 bean:
  |  globalSession |  global HTTP session 的生命周期有一个单独的 bean 定义。典型的是，它只在使用 Protlet 的 web 中才有定义。只有上下文是一个Spring ApplicationContext 的 web-aware，时才是有效的|
  |  application   | ServletContext 的生命周期有一个单独的 bean 定义。只有上下文是一个Spring ApplicationContext 的 web-aware，时才是有效的|
  |  websocket     | WebSocket 的生命周期是一个单独的 bean 定义。只有上下文是一个Spring ApplicationContext 的 web-aware，时才是有效的|
+ 
 
