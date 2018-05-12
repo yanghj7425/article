@@ -5,9 +5,19 @@
 | ------| ------|
 |yanghj7425|1501587673@qq.com|
 ---
-For each contributor, great thanks for you.<br>
+For each friends, If you are willing to you can write down your information below . And great thanks for you.<br>
+<center>
 
 ![][foryou]
+
+</center>
+
+---
+| contributor| Email|
+|---------| -------- |
+|Andrewzhong| |
+
+
 
 我来帮你加一笔哈
 
