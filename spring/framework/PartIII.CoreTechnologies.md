@@ -26,7 +26,10 @@
     * [方法注入](#方法注入)
     * [查找方法注入](#查找方法注入)
 * [bean域](#bean域)
-    * [作用域](#作用域)
+    * [单例作用域](#单例作用域)
+    * [原型作用域](#原型作用域)
+    * [单例作用域和原型作用域的依赖](#单例作用域和原型作用域的依赖)
+    * [初始化Web配置](#初始化web配置)
 <!-- catalog end -->
 
 
@@ -455,7 +458,6 @@ xml 实例，依赖多个 bean:
 你不仅可以控制被插入对象的个别的 bean 的定义及其各种依赖关系和配置的值，而且对象的域从一特殊的 bean 定义创建。这种方式时非常有用和高度灵活的，你可以通过配置来替代 class 的水平来选择你所创建对象的作用域。Beans 可以被定义和发布在多个作用域中：Spring Framework 提供 7 种作用域，5 种是可用的如果你使用 ApplicationContext。
 
 
- ### [作用域](#目录)
  |     作用域      |                 描述                |
  | -------------- |-------------------------------------|
  |  singleton     | 默认的, IOC 容器内只有一个实例对象    |
@@ -466,4 +468,71 @@ xml 实例，依赖多个 bean:
  |  application   | ServletContext 的生命周期有一个单独的 bean 定义。只有上下文是一个Spring ApplicationContext 的 web-aware，时才是有效的|
  |  websocket     | WebSocket 的生命周期是一个单独的 bean 定义。只有上下文是一个Spring ApplicationContext 的 web-aware，时才是有效的|
 
+ ### [单例作用域](#目录)
+被管理的单例 bean 只共享一个实例，所请求跟 id 或者 ids 与 Spring 容器管理的 bean 定义匹配的实例会被返回。
+参考定义如下：
+```xml 
+<bean id="accountService" class="com.foo.DefaultAccountService"/>
+<!-- the following is equivalent, though redundant (singleton scope is the default) -->
+<bean id="accountService" class="com.foo.DefaultAccountService" scope="singleton"/>
+```
+### [原型作用域](#目录)
+非单例的，原型作用域发布的结果是每一次请求都创建一个新的实例。换言之，bean 被注入到另一个 bean 中或者通过 getBean() 方法在容器内请求。作为一个规则，对所有 `有状态` 的 bean 使用原型作用域；对 `无状态` 的 bean 使用单例作用域。参考定义如下：
+```xml
+<bean id="accountService" class="com.foo.DefaultAccountService" scope="prototype"/>
+```
 
+### [单例作用域和原型作用域的依赖](#目录)
+当在一个单例作用域的 bean 依赖一个 原型作用域的 bean 的时候，要意识到*依赖关系是在实例化的时候确定的*。因此如果依赖注入一个原型作用域的 bean 到一个单例作用域的 bean 中，一个新的原型 bean 将被实例化然后注入到单例 bean 中。这个原型实例是为单例作用域 bean 提供的唯一的实例。<br>
+然而，假设你想要一个单例作用域 bean 在运行时需要一个新的原型作用域实例。你不能依赖注入一个原型作用域的 bean 到你单例作用域的 bean 中，因为注入只出现一次，当 Spring 容器初始化单例作用域 bean 的时候就会解析和注入它们的依赖关系。如果在运行时不止一次需要一个新的原型作用域，请参考[方法注入](#方法注入)。
+
+### [request、session 、global session、application 和 WebSocket 域](#目录)
+request, session,global session, application 和 websocket 域只有你使用了有 web-ware 的 Spring ApplicationContext 实现(比如 XmlWebApplication)。如果你在一个正常的 Spring IOC 容器中使用这些作用域比如： ClassPathXmlApplicationContext，一个 IllegalStateException 将要被抛出抱怨说:不知道这个 bean 的作用域。
+#### [初始化Web配置](#目录)
+为了支持 request, session,globalSession,application 和 websocket 作用域，在定义 bean 之前一些辅助的初始化配置是必须的。(这样的初始化在标准的单例作用域和原型作用域中是不需要的。)<br>
+你如何完成这个初始化步骤取决于你特定的 Servlet 环境。<br>
+如果你访问作用域在 Spring Web MVC 中，实际上请求时被 DispatcherServlet 或者 DispatcherPortlet 处理，然后就没有必须的步骤了：DispatcherServlet 和 DispatcherPortlet 已经暴露了所有相关状态。<br>
+如果你使用 Servlet 2.5 的 web 容器，请求被 Spring 的 DispatcherServlet 之外的处理，你需要注册一个`org.springframework.web.context.request.RequestContextListener`。对于 Servlet 3.0+，可以通过编程的方式实现 WebApplicationInitalizer 接口。另外，对于更老的容器，添加下面的声明在应用的 web.xml 文件中：
+```xml
+<web-app>
+    <listener>
+        <listener-class>
+        org.springframework.web.context.request.RequestContextListener
+        </listener-class>
+    </listener>
+</web-app>
+
+``` 
+另一种选择，如果你的监听启动有一些问题，可以考虑使用 Spring 的 RequestCOntextFilter。这个过滤器围绕着 web 应用的配置映射。所以级可以更加可适应的改变它。配置如下：
+```xml
+<web-app>
+    <filter>
+        <filter-name>requestContextFilter</filter-name>
+        <filter-class>org.springframework.web.filter.RequestContextFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>requestContextFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+</web-app>
+
+```
+DiapatcherServlet、RequestContextListener、RequestContextFilter 都做着同样的事情，也就是绑定 HTTP 请求对象到一个请求服务的 Thread。这使得在 request-scoped 和 session-scoped 上的 bean 可以沿着链往下。
+
+#### [请求作用域](#目录)
+参考下面的 XML 配置在你 bean 的定义中：
+```xml
+    <bean id="loginAction" class="com.foo.LoginAction" scope="request"/>
+```
+Spring 容器通过使用 loginAction bean 定义 为每一个 HTTP 请求创建一个新的 LoginAction 实例。就是这样，loginAction bean 是 HTTP 请求水平的。你可以在 bean 已经被创建好的时候尽你想要的改变其内部状态，因为其它的实例会从 loginAction 的定义中被创建将不会康健这个改变的状态；它们特殊的，对单独的 request。 当请求完成了处理，在 request 作用域内的 bean 会被废弃。<br><br>
+单使用基于注解驱动的组件或者 Java Config，@RequestScope 注解可以被用来分配一个元素到 request 作用域中。
+```java
+@RequestScope
+@Component
+public class LoginAction{
+    ///
+}
+
+```
+
+#### [会话作用域](#目录)
