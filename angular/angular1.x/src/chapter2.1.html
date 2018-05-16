@@ -1,0 +1,14 @@
+<html ng-app="myApp">
+<head>
+<script src="js/angular.min.js"></script>
+<script src="js/chapter2.1.js"></script>
+</head>
+
+<div ng-controller="myController as c">
+name : {{c.name}} <br>
+message : {{c.message}}
+<button ng-click="c.funClick(c.name)" value="{{c.name}}">button</button>
+
+</div>
+
+</html>

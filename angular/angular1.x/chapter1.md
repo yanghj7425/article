@@ -1,8 +1,10 @@
 # <center> 开始 AngularJS </center>
 
 ## 起步
+
 [实例代码](./src/chapter1.1.html)<br>
 解释：
+
 1. 引入 angular.js  文件。
 2. 把一个 html 文件用 ng-app 指令定义为一个 angular 应用。
     ```html
@@ -14,7 +16,7 @@
         <body ng-init="name = 'world'">
     ```
     - 初始化 name 属性为字符串 ： world。
-4. 用 ng-model 指令绑定从模型到 html 的数据。 
+4. 用 ng-model 指令绑定从模型到 html 的数据。
     ```html
        <input ng-model="name" />
     ```
@@ -25,8 +27,10 @@
     ```
 
 ## angular 通常的设计方式
+
 [实例代码](./src/chapter1.2.html)<br>
 解释：
+
 1. angular.module(...): 使用一个数组作为第二个参数来创建一个新的 model，这个数组被用来提供模块所需要的依赖。
 2. .service(...): 创建一个 angular service 然后返回一个 module 链。
 3. .controller(...): 创建一个 angular controller 然后返回一个 module 链。
