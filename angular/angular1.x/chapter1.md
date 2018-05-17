@@ -1,6 +1,14 @@
 # <center> 开始 AngularJS </center>
 
-## 起步
+<!-- catalog-->
+## 目录
+* [ 起步 ](#起步)
+* [angular 通常的设计方式](#angular通常的设计方式)
+
+
+
+
+## [起步](#目录)
 
 [实例代码](./src/chapter1.1.html)<br>
 解释：
@@ -26,7 +34,7 @@
         <span>Hello, {{ name }}</span>
     ```
 
-## angular 通常的设计方式
+## [angular通常的设计方式](#目录)
 
 [实例代码](./src/chapter1.2.html)<br>
 解释：
