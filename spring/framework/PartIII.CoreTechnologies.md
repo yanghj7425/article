@@ -520,7 +520,7 @@ request, session,global session, application 和 websocket 域只有你使用了
 DiapatcherServlet、RequestContextListener、RequestContextFilter 都做着同样的事情，也就是绑定 HTTP 请求对象到一个请求服务的 Thread。这使得在 request-scoped 和 session-scoped 上的 bean 可以沿着链往下。
 
 #### [请求作用域](#目录)
-参考下面的 XML 配置在你 bean 的定义中：
+对于一个 bean 的定义参考下面的 XML 配置：
 ```xml
     <bean id="loginAction" class="com.foo.LoginAction" scope="request"/>
 ```
@@ -536,3 +536,8 @@ public class LoginAction{
 ```
 
 #### [会话作用域](#目录)
+对于一个 bean 的定义参考下面的 XML 配置：
+```xml
+<bean id="userPreferences" class="com.foo.UserPreferences" scope="session"/>
+```
+Spring 容器为一个独立的 HTTP 会话通过 userPerferences 的定义创建一个新的 UserPreferences 实例。换言之，userPerferences bean 的有效域在 HTTP session  水平。
