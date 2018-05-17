@@ -5,5 +5,4 @@
 - `$onDestory()`: 当一个控制器的 scope 被销毁的时候调用，调用这个方法释放外部资源、watches、event handlers。
 
 
-
 > `$ctrl` 是控制器默认的别名，如果没有显示的指定。

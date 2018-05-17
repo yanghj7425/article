@@ -1,0 +1,18 @@
+<html>
+
+<head>
+    <title> this is chapter6.3 reuseable directive</title>
+    <script src="js/angular.min.js"></script>
+    <script src="js/chapter6.3.js"></script>
+    <script src="js/directive.js"></script>
+</head>
+
+<body ng-app="myApp">
+    <div ng-controller="costumeController">
+        <demo-directive name="World"></demo-directive>
+        <toolbar value1="value1" value2="value2"></toolbar>
+        <button ng-click="cli()">click me</button>
+    </div>
+</body>
+
+</html>
