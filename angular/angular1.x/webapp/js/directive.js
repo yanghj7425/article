@@ -45,7 +45,7 @@ myApp.directive('toolbar', function () {
 myApp.directive('superman', function(){
     return {
         restrict: 'E',
-        templateUrl: 'superman-template.html',
+        templateUrl: '../superman-template.html',
         controller: function(){
             this.message = 'I`m superman'
         },
