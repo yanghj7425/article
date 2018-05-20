@@ -541,3 +541,6 @@ public class LoginAction{
 <bean id="userPreferences" class="com.foo.UserPreferences" scope="session"/>
 ```
 Spring 容器为一个独立的 HTTP 会话通过 userPerferences 的定义创建一个新的 UserPreferences 实例。换言之，userPerferences bean 的有效域在 HTTP session  水平。
+
+
+- 待续 ...

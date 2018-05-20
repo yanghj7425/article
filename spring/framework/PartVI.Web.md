@@ -508,3 +508,5 @@ public String upload(...) {
 特殊的 `redirect` 前缀讯息你完这个。如果被返回的视图名称的前缀有一个 `redirect:` ，UrlBaseViewResolver 将识别出来并作为需要重定向的特殊的指示。剩下的 URL 将被当作重定向的 URL 对待。<br>
 网络上的效果是一样的，如果控制器返回一个 RedirectView，但是现在控制器自己可以操作一组逻辑视图名称。一个逻辑视图名称，比如: redirect:/myapp/some/resources 将要重定向到相对当前 Servlet 上下文中，当这样 `redirect:http://myhost.com/some/arbitrary/path` 一个名称出现的时候将被重定向到一个绝对路径。<br>
 **注意** 控制器是被 @ResponseStatus 注解的，注解的值将被优先响应通过 RedirectView。
+
+- 待续 ...
