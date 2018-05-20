@@ -45,15 +45,16 @@ myApp.directive('toolbar', function () {
 myApp.directive('superman', function(){
     return {
         restrict: 'E',
-        templateUrl: '../superman-template.html',
+        templateUrl: 'superman-template.html',
         controller: function(){
             this.message = 'I`m superman'
         },
-        controlerAs: 'supermanCtrl',
+        controllerAs: 'supermanCtrl',
         link: function(scope, element, addributes){
             element.on('click',function(){
-                alert('I am superman !')
+                alert('I am superman !');
             })
         }
     }
 });
+
