@@ -13,6 +13,7 @@ Spring 的 综合事务管理支持覆盖一些细节，Spring 框架可以接�
         * [本地事务](#本地事务)
         * [Spring的一致编程模型](#spring的一致编程模型)
     * [明晰&nbsp;Spring&nbsp;框架事务抽象](#明晰spring框架事务抽象)
+    * [同步资源事务](#同步资源事务)
 ## 事务管理
 
 ### [Spring事务管理介绍]()
@@ -155,3 +156,11 @@ txManager bean 是 HibernateTransactionManager 类型的一种情形。同样的
 如果你使用 JTA，那么你的事务管理将看起来一样，尽管你是用的数据访问技术可能是 JDBC、Hibernate JPA 或者其他支持的技术。这是实际上是因为 JTA 的事务是一个全局的事务，它可以支持任何的事务资源。<br>
 
 在这所有的情形下，应用代码不需要改变。你可以改变事务的管理方式仅仅通过改变配置文件，甚至从本地事务改变到全局事务，反之亦然。
+
+### [同步资源事务](#目录)
+你现在因该清楚你怎样创建不同的事务管理，他们与资源之间的联系和需要同步到事务（例如： DataSourcesTransactionManager 到一个 JDBC DataSource、Hibernate TransactionManager 到 Hibernate SessionFactory 等等）。这部分描述应用代码怎样直接或间接的是用持久化的 API 比如 JDBC、Hibernate 或者 JDO 来确保资源的创建、重用、清理。这部分通过 PlatformTransactionManager 也讨论事务同步是怎样被触发的。
+
+#### [高级同步的方法](#目录)
+推荐的方法是使用 Spring 最高级别基于模板的持久化 API 或使用具有事务感知工厂的本地 ORM API 或 代理管理本地资源工厂。这些事务敏感解决内部处理资源的创建、重用、清理、选择资源事务同步和异常映射。因此用户数据访问代码没有这些任务的地址，但是可以只专注于没有模板的持久化逻辑。一帮的，你是用本地的 ORM API或者通过 JdbcTemplate 采用一个 template 接近 JDBC 访问。这些解决方案的细节是后面的章节的内容
+
+#### [低水平的同步方法](#目录)
