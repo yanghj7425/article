@@ -119,3 +119,39 @@ PlatformTransactionManager 的实现通常需要一些他们工作环境的知�
     <property name="dataSource" ref="dataSource"/>
 </bean>
 ```
+如果你在是使用 Java EE 容器中使用 JTA，你是用的数据源从 JNDI 获取的，与 Spring 的 JtaTransactionManager 合作。这样看起来像 JTA　JNDI　的查找版本：
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:jee="http://www.springframework.org/schema/jee"
+    xsi:schemaLocation="
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/jee
+    http://www.springframework.org/schema/jee/spring-jee.xsd">
+        <jee:jndi-lookup id="dataSource" jndi-name="jdbc/jpetstore"/>
+        <bean id="txManager" class="org.springframework.transaction.jta.JtaTransactionManager" />
+    <!-- other <bean/> definitions here -->
+</beans>
+
+```
+JtaTransactionManager 不需要知道 DataSource，或者其他特殊的数据源，因为它是用的容器的全局事务管理机制。
+
+> 注意：<br> 
+上面定义的数据源 dataSources 使用的是 jee 命名空间 `<jndi-lookup/>` 标签。
+
+你也可以容易的是用 Hibernate 的本地事务，正如下面的例子所示。在这种情况下，你需要定义一个 Hibernate LocalSessionFactoryBean，你的应用代码将要获得这个 Hibernate session 实例。<br>
+
+DataSource 的定义和之前展示的 local JDBC 例子非常相似。
+> 注意：<br>
+如果数据源，使用了任何一个非 JTA 事务管理，通过 JNDI 查找，并由 Java EE 容器管理。那么它将是非事务性的，因为 Spring 框架而不是 Java EE 容器将要管理事务。
+
+txManager bean 是 HibernateTransactionManager 类型的一种情形。同样的方式 DataSourceTransactionManager 需要参考数据源，HibernateTransactionManager 需要参考 SessionFactory。<br>
+
+如果你使用 Hibernate 和 Java EE 容器管理 JTA 事务，那么你因该简单的和之前的 JDBC 的例子一样使用 JtaTransactionManager。
+
+> 注意：<br>
+如果你使用 JTA，那么你的事务管理将看起来一样，尽管你是用的数据访问技术可能是 JDBC、Hibernate JPA 或者其他支持的技术。这是实际上是因为 JTA 的事务是一个全局的事务，它可以支持任何的事务资源。<br>
+
+在这所有的情形下，应用代码不需要改变。你可以改变事务的管理方式仅仅通过改变配置文件，甚至从本地事务改变到全局事务，反之亦然。
