@@ -542,7 +542,29 @@ public class LoginAction{
 ```xml
 <bean id="userPreferences" class="com.foo.UserPreferences" scope="session"/>
 ```
-Spring 容器为一个独立的 HTTP 会话通过 userPerferences 的定义创建一个新的 UserPreferences 实例。换言之，userPerferences bean 的有效域在 HTTP session  水平。
+
+Spring 容器为一个独立的 HTTP 会话通过 userPerferences 的定义创建一个新的 UserPreferences 实例。换言之，userPerferences bean 的有效域在 HTTP session  水平。和请求作用域的 bean 一样，你可以改变创建所 bean 实例的内部状态。其他的 Http session 实例同样用 userPerferences 定义创建的实例不会看见这些改变的状态，因为他们是在每一个 HTTP session 之间是独立的。当 HTTP session 最终被丢弃，作用域到特定HTTP会话的bean也被丢弃。<br><br>
+
+当使用注解驱动或者 Java Config，@SessionScope 注解可以被分配到 session 作用域的组件。
+```java
+@SessionScope
+@Component
+public class UserPreferences {
+// ...
+}
+
+```
+#### [Global回话作用域](#目录)
+
+参考下面的配置：
+
+```xml
+<bean id="userPreferences" class="com.foo.UserPreferences" scope="globalSession"/>
+```
+
+global session 作用域和标准的 HTTP session作用域非常相似，并且只能用在 *基于 protlet 的 web 应用中*。protlet 特别定义了 gloabl session 的定义来在所有 protlet 之间共享，这样组成了一个单一的 protlet web 应用。Beans 被定义在 globalSession 作用域的生命周期是 global portlet Session。<br> <br>
+
+如果你写了一个标准的基于 Servlet 的 web 应用你也定义了一个或者多个 beans 具有globalSession 作用域，标准的 HTTP session 将会被使用，不会抛出异常。
 
 
 - 待续 ...
