@@ -503,7 +503,9 @@ request, session,global session, application 和 websocket 域只有你使用了
 </web-app>
 
 ``` 
+
 另一种选择，如果你的监听启动有一些问题，可以考虑使用 Spring 的 RequestContextFilter。这个过滤器围绕着 web 应用的配置映射。所以级可以更加可适应的改变它。配置如下：
+
 ```xml
 <web-app>
     <filter>
