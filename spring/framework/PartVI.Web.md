@@ -77,7 +77,7 @@ Spring 的 Web 模块包括许多唯一 web 支持的特性：
 
 在上面的列子中，所有以 `/example` 开头的请求将被一个叫 `example` 的 `DispacherServlet` 实例处理。<br>
 `WebApplicationInitializer` 是一个 `Spring MVC` 提供的接口，他确保你的基础代码配置是可以被检测到的和自动初始化任何 `Servlet 3` 的容器。一个叫做 `AbstractAnnotationConfigDispatcherServlet` 的抽象类实现了 `WebApplicationInitializer` 这个接口甚至使它更容易注册 `DispatcherServlet` 通过简单的说明他的 `servlet` 映射和罗列出配置类，这是一个推荐的方式设置你的 `Spring MVC` 应用。请参考 *基于代码的容器初始化* 查看更多详细信息。<br>
-实际上 `DispatcherServlet` 是一个`Servlet`(他继承自基类`HttpServlet`)，你也可以在你的 `web` 应用中像这样声明你的 `web.xml` 文件。你需要映射你想让 `DispatcherServlet` 处理的请求，通过使用在同一个 `web.xml` 文件中使用 `URL` 映射。这是一个标准的 `Java EE Servlet` 配置；下面这个例子展示了 `DispatcherServlet` 声明和映射：<br>
+实际上 `DispatcherServlet` 是一个 `Servlet`（他继承自基类 `HttpServlet`），你也可以在你的 `web` 应用中像这样声明你的 `web.xml` 文件。你需要映射你想让 `DispatcherServlet` 处理的请求，通过使用在同一个 `web.xml` 文件中使用 `URL` 映射。这是一个标准的 `Java EE Servlet` 配置；下面这个例子展示了 `DispatcherServlet` 声明和映射：<br>
 
 下面的 `web.xml` 等价于上面基于代码的例子：
 <div style="height:240px; overflow: auto;">
@@ -98,9 +98,9 @@ Spring 的 Web 模块包括许多唯一 web 支持的特性：
 ```
 </div><br>
 
-正如在`7.15`的详情部分，*`ApplicationContext` 的附加功能*，`ApplicationContext` 实例在 `Spring` 中可以被审视(scoped)。在 `Web MVC` 框架里，每一个 `DispatcherServlet` 有他自己的 `WebApplicationContext`，他们继承的所有 `bean` 已经被定义在*根`WebApplicationContext`*上。*根 `WebApplicationContext`* 应该包含所有基础的 `beans`，根 `WebApplivationContext` 应该在其他的 `contexts` 和 `Servlet` 实例中被共享。这些继承的 `beans` 可以在特殊的 `servlet-scope` 中被复写，你也可以为一个给定的 `Servlet` 实例定义新的 `servlet-scope beans` 。<br>
+正如在`7.15`的详情部分，*`ApplicationContext` 的附加功能*，`ApplicationContext` 实例在 `Spring` 中可以被审视(scoped)。在 `Web MVC` 框架里，每一个 `DispatcherServlet` 有他自己的 `WebApplicationContext`，他们继承的所有 `bean` 已经被定义在*根 `WebApplicationContext`* 上。*根 `WebApplicationContext`* 应该包含所有基础的 `beans`，根 `WebApplivationContext` 应该在其他的 `contexts` 和 `Servlet` 实例中被共享。这些继承的 `beans` 可以在特殊的 `servlet-scope` 中被复写，你也可以为一个给定的 `Servlet` 实例定义新的 `servlet-scope beans` 。<br>
 
-根据 `DispatcherServlet` 的初始化，`Spring MVC` 会在你 web 应用的 `WEB-INF`目录下寻找一个叫做`[servlet-name]-servlet.xml`的文件，并且创建这里面定义的 `bean`。覆盖任何在全局域中用同一个名字定义`bean`。<br>
+根据 `DispatcherServlet` 的初始化，`Spring MVC` 会在你 web 应用的 `WEB-INF` 目录下寻找一个叫做`[servlet-name]-servlet.xml`的文件，并且创建这里面定义的 `bean`。覆盖任何在全局域中用同一个名字定义`bean`。<br>
 
 思考下面`DispatcherServlet`的`Servlet`配置：<br>
 <div style="height:240px; overflow:auto">
@@ -123,7 +123,7 @@ Spring 的 Web 模块包括许多唯一 web 支持的特性：
 </div><br>
 
 在上面的配置中，你需要一个叫作 `/WBE-INF/golfing-servlet.xml` 的文件在你应用中；这个文件包括了你所有 `Spring Web MVC` 指定的组件（`beans`）。你也可以改变这个配置文件的精确的路径，通过一个`Servlet`初始化参数（详情看下面）:<br>
-对于单一`DispatcherServlet`的场景，只有一个根`context`是可能的。<br>
+对于单一 `DispatcherServlet` 的场景，只有一个根 `context` 是可能的。<br>
 这可以被配置通过设置一个空的 `contextConfigLocation servlet` 参数，正如下面这样：<br>
 <div style="height:300px;overflow:auto;">
 
@@ -156,7 +156,7 @@ Spring 的 Web 模块包括许多唯一 web 支持的特性：
 ```
 </div><br>
 
-`WebApplicationContext` 是 `ApplicationContext` 的一个扩展计划它有很多对于 `web` 应用必须的特性。它不同于正常的`ApplicationContext` 在这方面它有解析主题的能力，它知道哪一个 `Servlet` 被关联（有一个到 `ServletContext` 的 link ）。`WebApplicationContext` 被约束在 `ServletContext` 中。如果你需要访问它，你可以通过使用 `RequestContextUtils` 类的静态方法随时查看`WebApplicationContext`。
+`WebApplicationContext` 是 `ApplicationContext` 的一个扩展计划它有很多对于 `web` 应用必须的特性。它不同于正常的 `ApplicationContext` 在这方面它有解析主题的能力，它知道哪一个 `Servlet` 被关联（有一个到 `ServletContext` 的 link ）。`WebApplicationContext` 被约束在 `ServletContext` 中。如果你需要访问它，你可以通过使用 `RequestContextUtils` 类的静态方法随时查看`WebApplicationContext`。
 
 注意到这样，我们可以同样用 `Java` 代码配置来实现：<br>
 ```java
@@ -201,12 +201,15 @@ public class GolfingWebApplication extends AbstractAnnotationConfigDispatcherSer
 - `FlashMapManager` : 存储和检索 `FlashMap `的 `input `和 `output`，这可以被用来从一个属性到林外一个属性传递属性，一般通过重定向`redirect`。   
 
 **默认的 `DispatcherServlet` 配置**<br>
-前面提到的对于每一个特殊的`bean`，默认使用`DispatcherServlet`包含的一个默认`list`的实现。这个信息保存在包`org.springframework.web.servlet`中的`DispatcherServlet.properties`。<br>
+前面提到的对于每一个特殊的 `bean`，默认使用 `DispatcherServlet` 包含的一个默认 `list` 的实现。这个信息保存在包 `org.springframework.web.servlet` 中的 `DispatcherServlet.properties`。<br>
 所有特殊的 beans 有一些他们自己的合适的默认的值。虽然迟早你将要定做一个或定做一个或者多个这些 beans 提供的属性。例如，一个非常普通的配置一个 InternalResourceViewResolver 设置它的 prefix 属性为视图文件的父路径。<br>
-无论细节，这里要明白一个重要的概念。一旦在你的 WebApplicationContext 中配置了一个特殊的类 (例如 InternalResourceViewResolver )，你实际上覆盖了这个 list 的默认实现，否则这个特殊类将被使用。例如，如果你配置了一个 InternalResourceResolver ,默认列表里面的 ViewResolver 的实现会被忽略。<br>
+无论细节，这里要明白一个重要的概念。一旦在你的 WebApplicationContext 中配置了一个特殊的类 (例如 InternalResourceViewResolver )，你实际上覆盖了这个 list 的默认实现，否则这个特殊类将被使用。例如，如果你配置了一个 InternalResourceResolver, 默认列表里面的 ViewResolver 的实现会被忽略。<br>
+
 在 “Spring MVC 配置” 将学到其他的选择，关于 Spring MVC 的配置包括 Java 配置和 XML 配置，两者都提供一个简单的开始并且假设对 Spring MVC 的工作原理一无所知。无论你怎样选择配置你的应用，这部分介绍的概念是基本的并且对你有帮助。<br><br>
+
 **DispatcherServlet 处理队列**<br>
 你设置一个 DispatcherServlet 之后，一个请求来了为了这个特殊的 DispatcherServlet，这个 DispatcherServlet 开始处理请求按照下面的步骤：<br>
+
 - 在一个请求中 WebApplicationContext 被找到并且作为一个属性绑定在请求中，在过程中控制器和其他元素可以被使用。它被约束在默认的 key  DispatcherServlet.WEB_APPLICATION_CONTEXT_ATTRIBUTE 之下。
 - 当处理请求时，区域解析请求被绑定在请求中为了在区域解析中启用元素（渲染视图、准备数据、等等）。如果你不需要区域解析，你不需要它。
 - 主题解析被绑定到请求中为了使能元素。例如，视图决定使用那一个主题，如果你没用到主题，你可以忽略它。
@@ -214,6 +217,7 @@ public class GolfingWebApplication extends AbstractAnnotationConfigDispatcherSer
 - 搜索一个合适的处理程序。如果处理器被发现，与处理器相关的执行链被执行（预处理器、后置处理器、和控制器），为了准备模型和渲染。
 - 如果模型被返回，视图被渲染。如果没有模型返回，（可能是前置处理器或后置处理器中断了请求，也可能是其它安全原因），没有视图被渲染，因为请求已经完成了。
 控制器异常解析器被声明在 WebApplicationContext 中，挑选在处理请求过程中抛出的异常。使用这些异常解析允许你定义通用的行为到异常地址。<br><br>
+
 作为一个特殊的 Servelt API，Spring 的 DispatcherServlet 也支持返回最近的修改日期。确定一个特殊请求最后修改日期的过程是简单的：DispatcherServlet 查找一个合适的控制器映射并且测试这个被发现的控制器是否实现了 LastModified 接口。如果实现了，LastModified 接口的 long
 getLastModified(request) 方法的值会被返回给客户端。<br><br>
 - 你可以定做个人的 DispatcherServlet 实例通过添加 Servlet 初始化参数(init-param 元素) 到 Servlet 声明在 web.xml 文件中。<br><br>看下面，列出支持的参数：
@@ -222,10 +226,12 @@ getLastModified(request) 方法的值会被返回给客户端。<br><br>
     3. namespace: WebAppLicationContext 默认的命名空间是 [servlet-name]-servlet。
 
 ## 实现控制器
+
 控制器提供访问应用的行为你通常通过服务接口定义。控制器拦截用户的输入和转变它到一个模型里面，这样通过视图展示给用户。Spring 通过一种非常抽象的方式实现了一个控制器，这允许你创建多个种类的控制器。<br><br>
 Spring 2.5 为 MVC 控制器介绍了一个基于注解的编程模型，使用注解例如：@RequestMapping、@RequestParam、@ModelAttribute、等等。提供的这些注解是可用的对 Servlet MVC 和 Portlet MVC。控制器在这种方式下被实现不必要扩展指定的基类或者实现特定的接口。此外，他们通常不会直接依赖于 Servlet 或者 Portlet API，虽然你可以容易的配置访问 Servlet 或者 Portlet 实例。<br><br>
 **提示**<br>
 > 大量的 Web 应用利用本节所描述的注解，包括：MvcShowcase、MvcAjax、MvcBasic、PetClinic、和其他。
+
 ```java
 @Controller
 public class HelloWorldController{
