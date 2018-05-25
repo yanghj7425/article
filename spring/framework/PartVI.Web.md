@@ -1,9 +1,15 @@
 # <center>Part VI. The Web</center>
+
+## 目录
+*  [Web MVC 框架](#webmvc框架)
+    * [Spring Mvc 框架介绍](#springmvc框架的介绍)
+
 这部分的参考手册覆盖 Spring 框架支持的表示层(特殊的基于Web的表示层 `presentation tier`) 包括在 web 引用中支持 `WebSocket-sytle` 消息。<br>
 Spring 框架有他自己的 Web 框架，`Spring Web MVC`,第一章里面覆盖了`Spring MVC`的相关知识，随后的章节关注`Spring` 框架跟其它 Web 记住的集成，接下来是 `Spring` 框架的 `MVC protlet` 框架，然后本节在 26 章综合的总结了`Spring` 框架对 `WebSocket`的支持。
 
-## Web MVC 框架
-### Spring MVC 框架的介绍
+## WebMVC框架
+### SpringMVC框架的介绍
+
 `Spring` 的 Web 模型-视图-控制 框架是围绕着 `DispacherServlet` 设计的。它分发 `requests` 到 `handlers`，可以配置 `handler` 的映射、视图解析、定位、时区、主题也支持文件的上传下载。默认的 handler 是基于 `@Controller` 和 `@RequestMapping` 注解，提供了一个广泛灵活的处理方法。从引入 `Spring 3.0` 开始，`@Controller` 机制(mechanism)也允许你创建一个 `RESTful` 网站和应用，通过 `@PathVariable` 注解和其他的特性。<br>
 
 >“面向扩展开放……” Spring Web MVC 设计的原则的关键和在一个普通的 Spring 应用中一个关键的原则时 “面向扩展开放，面向修改封闭”。<br>
@@ -24,7 +30,7 @@ SWF 允许你捕获逻辑页面流作为它自己的模块，在不同的情况�
 Spring 的 Web 模块包括许多唯一 web 支持的特性：
 - 角色分明。每一个角色——控制器、效验器、命令对象、表单对象、模板对象、`DispatcherServlet`、`handler mapping`、视图解析器等等。被一系列的序列化对象实现。
 - `javaBeans` 作为框架和应用类直接强有力且直接的配置。这种配功能包括容易引用的上下文，例如 从 web 控制器到业务对象和验证器。
-- 可适配的，非倾入式的和灵活的。你需要定义任意一个控制器的方法签名，尽可能的是员工众多参数注解中的一个（例如 ：`@RequestParam, @RequestHeader, @PathVariable`和其他的）作为一个方案。
+- 可适配的，非侵入式的和灵活的。你需要定义任意一个控制器的方法签名，尽可能的是员工众多参数注解中的一个（例如 ：`@RequestParam, @RequestHeader, @PathVariable`和其他的）作为一个方案。
 - 业务代码的重用，不需要复制。使用已经存在的业务对象作为命令或者表当对象而不是镜像他们来扩展框架基础类的特性。
 - 可定制的绑定和验证，将类型不匹配作为一个应用水平的效验错误一直是一个讨厌的值，当地日期和数字额绑定，因此我们不再只使用字符串表当对象，而是手动解析和转变为一个业务对象。
 - 可定制的控制器处理程序和视图解析器。控制器处理程序和视图解析的策略来自简单的基于` URL `的配置，到复杂的专门解决的策略。Spring 比 Web MVC 框架授权技术更加灵活。
@@ -92,7 +98,7 @@ Spring 的 Web 模块包括许多唯一 web 支持的特性：
 ```
 </div><br>
 
-正如在`7.15`的详情部分，* `ApplicationContext` 的附加功能*，`ApplicationContext`实例在`Spring`中可以被审视(scoped)。在 `Web MVC` 框架里，每一个 `DispatcherServlet` 有他自己的 `WebApplicationContext`，他们继承的所有 `bean` 已经被定义在*根`WebApplicationContext`*上。*根 `WebApplicationContext` *应该包含所有基础的 `beans`，*根 `WebApplivationContext` *应该在其他的`contexts`和`Servlet`实例中被共享。这些继承的 `beans` 可以在特殊的 `servlet-scope` 中被复写，你也可以为一个给定的 `Servlet` 实例定义新的 `servlet-scope beans` 。<br>
+正如在`7.15`的详情部分，*`ApplicationContext` 的附加功能*，`ApplicationContext` 实例在 `Spring` 中可以被审视(scoped)。在 `Web MVC` 框架里，每一个 `DispatcherServlet` 有他自己的 `WebApplicationContext`，他们继承的所有 `bean` 已经被定义在*根`WebApplicationContext`*上。*根 `WebApplicationContext`* 应该包含所有基础的 `beans`，根 `WebApplivationContext` 应该在其他的 `contexts` 和 `Servlet` 实例中被共享。这些继承的 `beans` 可以在特殊的 `servlet-scope` 中被复写，你也可以为一个给定的 `Servlet` 实例定义新的 `servlet-scope beans` 。<br>
 
 根据 `DispatcherServlet` 的初始化，`Spring MVC` 会在你 web 应用的 `WEB-INF`目录下寻找一个叫做`[servlet-name]-servlet.xml`的文件，并且创建这里面定义的 `bean`。覆盖任何在全局域中用同一个名字定义`bean`。<br>
 
