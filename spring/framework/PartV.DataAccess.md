@@ -187,3 +187,4 @@ txManager bean 是 HibernateTransactionManager 类型的一种情形。同样的
 TransactionAwareDataSourceProxy 类是最低水平的存在。这是一个对目标 DataSource 的代理，它封装了目标 DataSource 为了添加 Spring 的事务管理。在这方面，和一个由 JavaEE 服务提供的事务性的 JNDI DataSource 非常相似。 <br>
 
 使用这个类几乎从来是不需要的和不满意的，除非当代码必须被调用并且通过标准的 JDBC 数据源接口来实现。在这样的情况下，这个代码是可用的，但是参与 Spring 管理的事务。它更喜欢你写新的代码通过上面提到的高水平的抽象。
+
