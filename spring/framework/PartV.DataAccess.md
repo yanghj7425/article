@@ -182,3 +182,8 @@ txManager bean 是 HibernateTransactionManager 类型的一种情形。同样的
 这个方法也工作在没有 Spring 事务管理的时候（事务同步是可选的），所以你可以使用它无论是否使用了 Spring 的事务管理。<br>
 
 当然，一档你是用了 Spring 的 JDBC、JPA 或 hibernate 支持，你通常将不会使用 DataSourceUtils 或者其他的帮助类，因为你将更开心的工作通过 Spring 的抽象，而不是直接使用关系型的 API。比如，如果你使用 Spring JdbcTemplate 或 jdbc.object 包是为了你使用 JDBC 的精简，正确的连接检索出现在幕后的场景，你将不需要写任何特殊的代码。
+
+#### [数据源事务代理意识](#目录)
+TransactionAwareDataSourceProxy 类是最低水平的存在。这是一个对目标 DataSource 的代理，它封装了目标 DataSource 为了添加 Spring 的事务管理。在这方面，和一个由 JavaEE 服务提供的事务性的 JNDI DataSource 非常相似。 <br>
+
+使用这个类几乎从来是不需要的和不满意的，除非当代码必须被调用并且通过标准的 JDBC 数据源接口来实现。在这样的情况下，这个代码是可用的，但是参与 Spring 管理的事务。它更喜欢你写新的代码通过上面提到的高水平的抽象。
