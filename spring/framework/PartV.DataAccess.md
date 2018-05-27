@@ -39,7 +39,7 @@ Spring 的 综合事务管理支持覆盖一些细节，Spring 框架可以接�
 
 #### [全局事务](#全局事务)
 
-全局事务允许你和多个事务型资源一起工作：典型的关系型数据库和消息队列。应用服务器通过 JTA 管理全局事务，这样使用 JTA 的 API 是愚蠢的 ( 部分原因是由于他的异常模式)。因此，JTA 使用的 UserTransaction 一般需要从 JNDI 中获取，意味着你需要为了使用　JTA　而使用　JNDI。明显的，使用全局事务会限制应用代码重用的潜力，正如　JTA　通常是在应用服务器的环境下使用。<br>
+全局事务允许你和多个事务型资源一起工作：典型的关系型数据库和消息队列。应用服务器通过 JTA 管理全局事务，这样使用 JTA 的 API 是愚蠢的 ( 部分原因是由于他的异常模式)。因此，JTA 使用的 UserTransaction 一般需要从 JNDI 中获取，意味着你需要为了使用 JTA 而使用 JNDI。明显的，使用全局事务会限制应用代码重用的潜力，正如 JTA 通常是在应用服务器的环境下使用。<br>
 
 在这之前，通过 EJB CMT (Container Managed Transaction)使用全局事务时比较喜欢的方式。CMT　是声明事务管理的一种形式(作为编程事务的一种区分)。EJB CMT 移除了事务相关的 JDNI 的需求，当然 EJB 本身需要使用 JNDI。它移除了太多根本不需要些的 Java 代码来控制事务。一个严重的缺点是 CMT 依赖 JTA 和应用服务器环境。所以，它仅仅是可用的如果选择一个在 EJB 中实现业务逻辑。EJB 一个消极的是通常都太大了，以至于不是一个吸引人的选择，尤其是对于声明事务管理面临一个信服的方案时。
 
@@ -65,7 +65,7 @@ Spring 的框架给你选择你的应用何时完全加载到你的应用服务�
 
 ### [明晰Spring框架事务抽象](#目录)
 
-Spring 事务抽象的关键是：事务策略( transaction strategy)的概念。transaction strategy 被定义在 `org.springframework.transaction.PlatformTransactionManager` 接口：
+Spring 事务抽象的关键是：事务策略（transaction strategy）的概念。transaction strategy 被定义在 `org.springframework.transaction.PlatformTransactionManager` 接口：
 ```java
 public interface PlatformTransactionManager {
     TransactionStatus getTransaction(
@@ -75,8 +75,8 @@ public interface PlatformTransactionManager {
 }
 
 ```
-这是一个主要的服务提供者接口 (SPI)，但是它在你的应用代码里面可以通过编程的方式实现。因为 PlatformTransactionManager 是一个接口，必要的时候它很容易被欺骗或者剔除。它没有依赖 JNDI 这样的查找策略。PlatformTransactionManager 的实现类就像在 Spring 框架的 IOC 容器中定义其它的对象一样。这样的好处是使 Spring 框架事务抽象比较值得，甚至和你使用 JTA 一起工作的时候。事务型的编码比直接使用 JTA 的方式更容易测试。<br>
-与 Spring 的哲学一样，TransactionException 可以被 PlatformTransactionManager 的任何方法抛出，这是一个非检查异常(是的，继承自 java.lang.RuntimeException 类)。事务基础的故障总是致命的。在极少数的情况下，应用代码实际上可以从失败的事务中恢复过来，应用开发者仍然可以选择捕获并且处理 TransactionException。特别的指出开发者不是强迫这样做的。<br>
+这是一个主要的服务提供者接口（SPI），但是它在你的应用代码里面可以通过编程的方式实现。因为 PlatformTransactionManager 是一个接口，必要的时候它很容易被欺骗或者剔除。它没有依赖 JNDI 这样的查找策略。PlatformTransactionManager 的实现类就像在 Spring 框架的 IOC 容器中定义其它的对象一样。这样的好处是使 Spring 框架事务抽象比较值得，甚至和你使用 JTA 一起工作的时候。事务型的编码比直接使用 JTA 的方式更容易测试。<br>
+与 Spring 的哲学一样，TransactionException 可以被 PlatformTransactionManager 的任何方法抛出，这是一个非检查异常（是的，继承自 java.lang.RuntimeException 类）。事务基础的故障总是致命的。在极少数的情况下，应用代码实际上可以从失败的事务中恢复过来，应用开发者仍然可以选择捕获并且处理 TransactionException。特别的指出开发者不是强迫这样做的。<br>
 getTransaction(...) 方法返回一个 TransactionStatus 对象，它需要一个 TransactionDefinition 参数。返回的 TransactionStatus 可能待代表一个新的状态，如果匹配的事务在当前的调用栈里面就可以代表一个已经存在的事务。后面一种情况的含义是：与 Java EE 事务上下文一样，一个 TransactionStatus 被分配给一个相关的线程执行。<br><br>
 **TransactionDefinition 接口定义**<br>
 
