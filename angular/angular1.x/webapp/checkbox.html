@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/angular.min.js"></script>
+    <script src="js/checkbox.js"></script>
+</head>
+
+<body ng-app="myApp">
+    <div ng-controller="myController">
+        <label for="flag" ng-show="true">全选
+            <input id="flag" type="checkbox" ng-model="select_all" ng-change="selectAll()">
+        </label>
+        <ul>
+            <li ng-repeat="i in list">
+                <input type="checkbox" ng-model="i.checked" ng-change="selectOne()">
+                <span>{{i.id}}</span>
+            </li>
+        </ul>
+
+    </div>
+</body>
+
+</html>

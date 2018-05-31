@@ -196,7 +196,7 @@ TransactionAwareDataSourceProxy 类是最低水平的存在。这是一个对目
 >**注意：**<br>
 大多数 Spring 框架的使用者选择声名事务管理。这样的选择对代码的影响最小，今后最符合的观点就是非侵入性的轻量级容器。<br>
 Spring 框架的声名事务管理和 EJB CMT 很相似你可以指定事务行为下降到每一个独立的方法。这样做是可以的，如果需要可以在事务的上下文中调用 setRollbackOnly() 方法。两种不同类型的事务管理类型：
- - 和 EJB CMT 不同的，和 JTA 有关系，Spring 框架的 声名事务管理可以工作在任何环境。它可以和 JTA 事务或者使用 JBDC、JPA、Hibernate、JDO 的本地事务一起工作，只需要调整一下配置文件。<br><br>
+ - 和 EJB CMT 不同的，Spring 框架的声名事务管理和 JTA 有关系可以工作在任何环境。它可以和 JTA 事务或者使用 JBDC、JPA、Hibernate、JDO 的本地事务一起工作，只需要调整一下配置文件。<br><br>
  - 你可以应用 Spring 框架的声名事务管理到任何类，不只是 EJB 这样特指的类。
  - Spring 框架提供了声名式回滚规则，这是 EJB 没有的。在编程和声名式的支持中都提供了回滚规则。
  - Spring 框架允许你定制通过 AOP 定制事务的行为。比如：你可以在事务回滚之后插入一个定制的行为。你也可以添加任意的 advice，还有事务 advice。EJB CMT，你不能用 setRollbackOnly() 来影响容器的事务管理。
@@ -206,4 +206,101 @@ Spring 框架的声名事务管理和 EJB CMT 很相似你可以指定事务行�
  声名事务配置在 Spring2.0 及以上的版本大不同与之前版本的 Spring。主要的区别是不再需要配置 TransactionProxyFactoryBean。<br>
  Spring2.0 之前的配置风格仍然 100% 有效，考虑新的 `<tx:tags/>` 为你简单的定义 TransactionProxyFactoryBean。
 
- 回滚规则的概念是重要的：他们使你指定哪一种 exception（和 throwables）应该出发自动回滚。
+ 回滚规则的概念是重要的：他们使你指定哪一种 exception（和 throwables）应该触发自动回滚。你可以在配置文件里面指定这些声明而不是在 java 代码里面。所以虽然你仍然可以在 TransactionStatus 上调用 setRollbackOnly() 方法来回滚当前事物，大多数的时候你可以指定一个 MyApplicationException 这样必须回滚的规则。这样选择的的优势是：业务对象不应该添加到基础事务结构里面。比如，比较有代表性的是不需要导入 Spring 事务 API 或 Spring 其他API。<br><br>
+
+虽然 EJB 容器默认在一个系统异常（通常是一个运行时异常）自动回滚事务，EJB CMT 不会在一个应用的异常（一个 被检查异常而不是 java.rmi.RemoteException）。但是 Spring 对声明事务管理默认遵守 EJB 的习俗（只有在非检查异常时才会自动回滚），这个特性对定制一个行为非常有用。
+
+#### [了解Spring框架声明事务的实现](#目录)
+
+不要满足于告诉你简单的在你的 classes 上使用 @Transactional 注解，添加一个 @EnableTransactionManagement 到你的配置中，然后你希望明白它整体是怎么工作的。这部分将要解释 Spring 框架如果发生于事务有关系的事件时声明事务内部的工作问题。<br><br>
+
+要掌握 Spring 框架声明事务支持最重要的概念是通过 AOP 代理启用，然后事务的 advice 是通过 元数据（当前的 XML 或者 注解）驱动的。AOP 和事务元数据的整合产生了一个 AOP 代理，使用 TransactionInterceptor 和一个合适的 PlatformTransactionManager 实现类链接来驱动事务围绕方法调用。<br><br>
+
+#### [声明式事务实现的列子]
+
+考虑下面的接口，它是一个绑定的实现。这个例子使用 Foo 和 Bar 类作为占位符为了你可以关注与事务的使用没有关注在个别的 domain 模型。这个例子的目的，实际上 DefaultFooServive 类在每一个实现体的方法的每一个方法抛出一个 UnSupportOperationException 实例是非常好的。它允许你在响应一个 UnsupportedOperationException 时查看事务的创建和回滚。
+
+```java
+// the service interface that we want to make transactional
+package x.y.service;
+public interface FooService {
+    Foo getFoo(String fooName);
+    Foo getFoo(String fooName, String barName);
+    void insertFoo(Foo foo);
+    void updateFoo(Foo foo);
+}
+
+```
+
+
+```java
+// an implementation of the above interface
+package x.y.service;
+public class DefaultFooService implements FooService {
+    public Foo getFoo(String fooName) {
+        throw new UnsupportedOperationException();
+    }
+    public Foo getFoo(String fooName, String barName) {
+        throw new UnsupportedOperationException();
+    }
+    public void insertFoo(Foo foo) {
+        throw new UnsupportedOperationException();
+    }
+    public void updateFoo(Foo foo) {
+        throw new UnsupportedOperationException();
+    }
+}
+
+
+```
+
+假设 FooService 接口开始的两个方法，getFoo(String) 和 getFoo(String, String), 必须以 read-only 的语义执行事务上下文；其他的方法 insertFoo(Foo) 和 updateFoo(Foo)，必须以 read-write 的语义执行事务。
+
+```xml
+<!-- from the file 'context.xml' -->
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:aop="http://www.springframework.org/schema/aop" 
+    xmlns:tx="http://www.springframework.org/schema/tx" xsi:schemaLocation="
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/tx
+http://www.springframework.org/schema/tx/spring-tx.xsd
+http://www.springframework.org/schema/aop
+http://www.springframework.org/schema/aop/spring-aop.xsd">
+    <!-- this is the service object that we want to make transactional -->
+    <bean id="fooService" class="x.y.service.DefaultFooService"/>
+    <!-- the transactional advice (what 'happens'; see the <aop:advisor/> bean below) -->
+    <tx:advice id="txAdvice" transaction-manager="txManager">
+        <!-- the transactional semantics... -->
+        <tx:attributes>
+            <!-- all methods starting with 'get' are read-only -->
+            <tx:method name="get*" read-only="true"/>
+            <!-- other methods use the default transaction settings (see below) -->
+            <tx:method name="*"/>
+        </tx:attributes>
+    </tx:advice>
+    <!-- ensure that the above transactional advice runs for any execution
+of an operation defined by the FooService interface -->
+    <aop:config>
+        <aop:pointcut id="fooServiceOperation" expression="execution(* x.y.service.FooService.*(..))"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="fooServiceOperation"/>
+    </aop:config>
+    <!-- don't forget the DataSource -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+        <property name="url" value="jdbc:oracle:thin:@rj-t42:1521:elvis"/>
+        <property name="username" value="scott"/>
+        <property name="password" value="tiger"/>
+    </bean>
+    <!-- similarly, don't forget the PlatformTransactionManager -->
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!-- other <bean/> definitions here -->
+</beans>
+
+```
+
+在配置之前检查。你想要创建一个服务对象，事务性的 fooService bean。事务的语义被应用在封闭的 `<tx:advice/>` 定义种。`<tx:advice/>` 定义读作“…… 左右以 `get` 开头的方法执行的时候都默认只读的事务，所有其他的方法执行的时候默认拥有”
