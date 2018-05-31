@@ -188,3 +188,18 @@ TransactionAwareDataSourceProxy 类是最低水平的存在。这是一个对目
 
 使用这个类几乎从来是不需要的和不满意的，除非当代码必须被调用并且通过标准的 JDBC 数据源接口来实现。在这样的情况下，这个代码是可用的，但是参与 Spring 管理的事务。它更喜欢你写新的代码通过上面提到的高水平的抽象。
 
+### [声明式事务管理](#目录)
+>**注意：**<br>
+大多数 Spring 框架的使用者选择声名事务管理。这样的选择对代码的影响最小，今后最符合的观点就是非侵入性的轻量级容器。<br>
+Spring 框架的声名事务管理和 EJB CMT 很相似你可以指定事务行为下降到每一个独立的方法。这样做是可以的，如果需要可以在事务的上下文中调用 setRollbackOnly() 方法。两种不同类型的事务管理类型：
+ - 和 EJB CMT 不同的，和 JTA 有关系，Spring 框架的 声名事务管理可以工作在任何环境。它可以和 JTA 事务或者使用 JBDC、JPA、Hibernate、JDO 的本地事务一起工作，只需要调整一下配置文件。<br><br>
+ - 你可以应用 Spring 框架的声名事务管理到任何类，不只是 EJB 这样特指的类。
+ - Spring 框架提供了声名式回滚规则，这是 EJB 没有的。在编程和声名式的支持中都提供了回滚规则。
+ - Spring 框架允许你定制通过 AOP 定制事务的行为。比如：你可以在事务回滚之后插入一个定制的行为。你也可以添加任意的 advice，还有事务 advice。EJB CMT，你不能用 setRollbackOnly() 来影响容器的事务管理。
+ - 正如做高端应用服务器，Spring 框架不支持远程调用时的事务传播。如果你需要这个特性，推荐你使用 EJB。然而，使用这个特性之前请仔细考虑，因为通常我们不想要事务跨过远程调用。
+
+ > TransactionProxyFactoryBean 用在哪儿？<br>
+ 声名事务配置在 Spring2.0 及以上的版本大不同与之前版本的 Spring。主要的区别是不再需要配置 TransactionProxyFactoryBean。<br>
+ Spring2.0 之前的配置风格仍然 100% 有效，考虑新的 `<tx:tags/>` 为你简单的定义 TransactionProxyFactoryBean。
+
+ 回滚规则的概念是重要的：他们使你指定哪一种 exception（和 throwables）应该出发自动回滚。
