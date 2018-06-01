@@ -269,6 +269,9 @@ http://www.springframework.org/schema/tx
 http://www.springframework.org/schema/tx/spring-tx.xsd
 http://www.springframework.org/schema/aop
 http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <aop:aspectj-autoproxy />
+
     <!-- this is the service object that we want to make transactional -->
     <bean id="fooService" class="x.y.service.DefaultFooService"/>
     <!-- the transactional advice (what 'happens'; see the <aop:advisor/> bean below) -->
@@ -312,3 +315,33 @@ of an operation defined by the FooService interface -->
 
 用 `<aop:pointcut/>` 元素定义一个 AspectJ 切点表达式。详情参看 11 章。<br>
 
+通常事务化整个 service 层是必要的。这样做最简单的方式是改变切点表达式去匹配你 Service 层的任何操作。比如：
+```xml
+<aop:config>
+    <aop:pointcut id="fooServiceMethods" expression="execution(* x.y.service.*.*(..))"/>
+    <aop:advisor advice-ref="txAdvice" pointcut-ref="fooServiceMethods"/>
+</aop:config>
+```
+
+现在我们来分析配置文件，你也许也这样问你自己：“这些配置文件实际上做了什么？”<br>
+
+上面的配置文件将从 fooService 的定义创建事务代理对象。代理将要被配置为事务性的 advice，为了当一个合适的方法在代理上被调用的时候，事务的启动、挂起、标记为只读等等，依赖于事务的配置将和方法关联。考虑下面的程序来测试驱动上面的配置。
+
+```java
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:context.xml"})
+@EnableAspectJAutoProxy
+public class AppTest   {
+	
+	@Autowired
+	private FooService fooService;
+	
+	@Test
+	public void  test(){
+		if(fooService != null){
+			fooService.insertFoo(new Foo());
+		}
+	}
+}
+
+```
