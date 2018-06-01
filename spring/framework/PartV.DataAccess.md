@@ -303,4 +303,12 @@ of an operation defined by the FooService interface -->
 
 ```
 
-在配置之前检查。你想要创建一个服务对象，事务性的 fooService bean。事务的语义被应用在封闭的 `<tx:advice/>` 定义种。`<tx:advice/>` 定义读作“…… 左右以 `get` 开头的方法执行的时候都默认只读的事务，所有其他的方法执行的时候默认拥有”
+在配置之前检查。你想要创建一个服务对象，事务性的 fooService bean。事务的语义被应用在封闭的 `<tx:advice/>` 定义种。`<tx:advice/>` 定义读作“…… 左右以 `get` 开头的方法执行的时候都默认只读的事务，所有其他的方法执行的时候默认拥有的事务配置(read-write)” 。`<tx:adivice/>` 标签的 transaction-manager 属性是设置 PlatformTransactionManager 的名称，这将驱动事务，在这个例子中是 `txManager` bean。<br><br>
+
+> 提示：<br>
+如果你想要有联系的 PlatformTransactionManager 的 name 是 transactionManager 你可以在一个事务 advice (`<tx:advice/>`) 中混合 transaction-mananger 属性。如果不是，你必须使用 transaction-manager 属性像之前的例子一样显示指定。<br><br>
+
+`<aop:config/>` 的定义确保了 txAdvice 定义的 bean 在程序中合适的点被执行（fooServiceOperation）。首先，你定义一个切点匹配定义在 FooService 接口中的操作。然后，你用 advisor 分配 txAdivce 切点。结果表明在执行 fooServiceOperation 的时候，被 txAdvice 定义的 advice 将要被执行。<br><br>
+
+用 `<aop:pointcut/>` 元素定义一个 AspectJ 切点表达式。详情参看 11 章。<br>
+
