@@ -351,5 +351,114 @@ public class AppTest   {
 
 前面的部分指明了怎样在你的应用中指定一个事务、典型的 Service 层。这部分展示给你怎样用一种简单的方式展现事务的回滚。<br>
 
-> 今天这个可能式最后一次提交了。 时间真的不允许我一边看一边写
+关于事务的回滚，再通知节点 `<tx:advice/>`  和属性节点 `<tx:attributes/>` 内部通过子节点 `<tx:method/>` 设置。
+- `<tx:method/>` 节点可以设置以下属性：
+    - name：标识响应事务的方法。eg: get* ，表示以 get 开头的方法都响应。
+    - read-only：事务是否为只读，默认为 false
+    - propagation：传递性
+    - isolation：独立性
+    - no-rollback-for：对于某种异常不回滚
+    - rollback-for：指定某种异常发生时，回滚
+    - timeout：超时时间
 
+Spring 框架默认对所有非检查异常（RuntimeException）执行回滚操作，对所有检查异常（Exception）不执行回滚操作。<br><br>
+
+关于异常的回滚，也可以在 `try-catch` 子句处理。
+```java
+
+public void transactionRollBack() {
+		Assert.notNull(fooService, "fooService can`t be  null");
+		try{
+			fooService.insertFoo(new Foo());
+		}catch(UnsupportedOperationException e){
+			TransactionAspectSupport.currentTransactionStatus().isRollbackOnly();
+		}
+}
+
+```
+
+在大部分情况下，我们的 Service 层可能不会在同一个包中，而且可能需要相同的方法响应不同的异常类型，这时候就可以在 `<aop:config/>` 节点内定义多个切点 `<aop:pointcut/>` 和通知 `<aop:advisor/>`，来映射到不同的 `<tx:advice/>` 以满足需求。
+
+#### [使用@Transactional注解](#目录)
+
+在有很多个 Service 的情况下可以使用 @Transactional 注解和注解驱动配置来简化配置文件（`<aop:config>` 配置）。
+```xml
+<tx:annotation-driven transaction-manager="txManager"/>
+```
+
+如果 PlatformTransactionManager 的 bean id 为 transactionManager，`transaction-manager` 属性就可以省略，否则需要显示的指定 transaction-manager 的值。<br>
+> 如果使用 javaConfig 的方法，只需要在 @Configuration 注解的类上简单的添加 @EnableTransactionManagement 注解。<br><br>
+
+- `<tx:annotation-driven/>` 节点可以设置一下属性
+    - transaction-manager : 上面介绍过了
+    - proxy-target-class: 是否用类代理，默认 false
+    - mode：代理模式，默认 proxy
+
+@Transactional 可以用在接口和方法上，或者 public 方法上。如果用在非 public 方法上，那要使用 基于 aspectj 的代理模式（织入）。<br><br>
+
+在方法上使用的注解，会覆盖在类或者接口上已经配置过的注解信息。如：事务只读状态、传递性等。
+
+
+####[编程式事务](#目录)
+
+编程事务，文档上说的比较少。可以参考其他博客。
+ 
+介绍的就不说了，先看代码（其实也是官网的代码，我只是自己跑了一遍）
+
+```java
+public class SimpleService {
+
+	private final TransactionTemplate transactionTemplate;
+
+	private static final Logger logger  = LoggerFactory.getLogger(SimpleService.class);
+
+	public SimpleService(PlatformTransactionManager transactionManager) {
+		Assert.notNull(transactionManager, "transactionManager can`t be null");
+		this.transactionTemplate = new TransactionTemplate(transactionManager);
+	}
+	
+	public Object someServiceMethod() {
+		return transactionTemplate.execute(new TransactionCallback<Object>() {
+			public Object doInTransaction(TransactionStatus status) {
+				updateOperation1();
+				return resultOfUpdateOperation2();
+			}
+		});
+	}
+	
+	private Object resultOfUpdateOperation2() {
+		logger.debug(getClass().getSimpleName() + " resultOfUpdateOperation2");
+		return "resultOfUpdateOperation2";
+	}
+
+	private void updateOperation1() {
+		logger.debug(getClass().getSimpleName() + " updateOperation1");
+	}
+
+}
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath:context.xml" })
+public class FooServiceTest {
+
+	private SimpleService simpleService;
+
+	@Test
+	public void programmaticTransactionTest() {
+		simpleService.someServiceMethod();
+	}
+｝
+```
+
+添加配置文件：
+```xml
+	<bean id="simpleService" class="com.yhj.service.impl.SimpleService">
+		<constructor-arg name="transactionManager" ref="txManager"></constructor-arg>
+		<!-- <property name="transactionTemplate" ref="txManager"></property> -->
+	</bean>
+```
+
+这里注入的时候一直给我一个 NPE，真是那句话：什么也不管丢给你一堆 NPE。 
+
+
+哎，今天第二次打这部分。第一次打完 mv 写成 rm 了，好痛苦……
