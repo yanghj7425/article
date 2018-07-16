@@ -12,7 +12,8 @@
 
 ### 剖析单条查询
 - 使用 show profile
-    1. set profile = 1; 在服务器会话级别动态的修改.
+    - 查看 profiling 状态 `show variables like '%profiling%'`,  profiling 在5.7以后的版本推荐使 用 `performance_schema`,亦可通过 `show variables like '%performance_schema%'` 查看.
+    1. set profiling = 1; 在服务器会话级别动态的修改.
     2. show profiles
     3. show profile for query 1
     4. 查询 information_schema.PROFILING 表
@@ -39,6 +40,16 @@
 
 
         ```
+- 使用 show status
+    - show status 命令返回一个计数器,有全局的也有会话级别的.没提交一次计数器加 1. 使用 `show global status` 可以查看服务器级别的从服务器启动开始执行的查询次数.
+
+- 使用 processlist
+    - `show processlist` 命令可以查询出当前数据库链接的状态.
+    - `SELECT * FROM  information_schema.PROCESSLIST` 可以查询出和 `show processlist` 同样的结果.
+
+- 使用查询日志
+    > 如果要通过慢查询日志,则需要开启并在全局级别这只 `long_query_time` 为 0, 并确认所有链接都已经使用了这种设置.
+    - 可以使用 tcpdump 和 pt-query-digest 工具模拟代替.
 
 
 
