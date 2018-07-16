@@ -42,7 +42,7 @@
 org.springframework.beans 和 org.springframework.context 包是 Spring 框架Ioc的基础， BeanFactory 接口提供了一个高级的配置机制关于管理任何类型的对象。ApplicationContext 是 BeanFactory 的一个子接口，他更容易的集成了Spring AOP 的特性： 消息资源控制，公共事件和应用层指定的上下文例如：WebApplicationContext 被用在 Web 应用中。<br><br>
 总而言之，BeanFactory 提供了框架的配置和基础的功能，ApplicationContext 添加了更多企业级的特性。ApplicationContext 是一个 BeanFactory 的一个完美超类，它仅仅被用在这章描述 Spring 的 Ioc 容器。更多用 BeanFactory 代替 ApplicationContext 的信息，参考7.16 BeanFactory。
 
-在 Spring 中，对象在应用中主要的形式和被 IOC 容器管理叫做 Bean，一个 Bean 是一个对象，它是一个实例，一个集合和任何被 Ioc 容器管理的。另外，一个 bean 不过是在你应用中众多对象中的一个。Beans ，他们之间的依赖关系呗映射到一个配置的数据文件里面被容器使用。
+在 Spring 中，对象在应用中主要的形式和被 IOC 容器管理叫做 Bean，一个 Bean 是一个对象，它是一个实例，一个集合和任何被 Ioc 容器管理的。另外，一个 bean 不过是在你应用中众多对象中的一个。Beans ，他们之间的依赖关系被映射到一个配置的数据文件里面被容器使用。
 ## 容器综述
 org.springframework.context.ApplicationContext 接口代表了 Spring 的 Ioc 容器和负责实例化、配置、集成上述提到的 bean。容器得到他的实例对于每一个通过读配置数据文件实例、配置、装配的对象。数据配置文件描述在 XML 文件、Java 注解、或者 Java 代码。它允许你表达你的对象然后组成你的应用并且丰富对象之间的依赖接口。<br><br>
 一些实现了 ApplicationContext 接口被 Spring 提供为没有内建的。在单例应用中，通常是创建一个 ClasspathXmlApplication 或者FileSystemXmlApplicationContext 实例。XML 已经形成传统的格式，为了配置的数据文件你可以指示容器使用 Java 注解或者代码作为数据元格式通过提供少量的配置文件起声明使能支持这些添加的元数据格式。<br>
