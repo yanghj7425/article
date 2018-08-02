@@ -12,7 +12,9 @@
 		<ul>
 			<li ng-repeat="msg in vm.message">{{ msg }}</li>
 		</ul>
-		
+		{{selectedFruit}}
+		<select ng-options="f.value as f.label group by f.value for f in vm.fruit track by f.id" ng-model="
+		selectedFruit"></select>
 	</div>
 </body>
 

@@ -11,7 +11,15 @@ function DemoController(worldService) {
 	var vm = this;
 	vm.message = worldService.getWorlds().map(function (w) {
 		return "hello," + w + "!";
-	})
+	});
+
+
+	vm.fruit = [
+		{ label: "Apples", value: 4, id: 2 },
+		{ label: "Oranges", value: 2, id: 1 },
+		{ label: "Limes", value: 4, id: 4 },
+		{ label: "Lemons", value: 5, id: 3 }
+	];
 }
 
 function startup($rootScope, $window) {

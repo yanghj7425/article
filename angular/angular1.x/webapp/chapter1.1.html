@@ -12,6 +12,9 @@
     <span>Hello, {{ name }}</span>
     <p ng-bind="name"></p>
     <p ng-cloak="name"> pppp {{ name }}</p>
+
+    <select ng-options="f.value as f.label group by f.value for f in fruit track by f.id" ngmodel="
+selectedFruit"></select>
 </body>
 
 </html>
