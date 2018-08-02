@@ -1,7 +1,7 @@
 # <center> 第 11 章 持有对象 </center> #
 - 如果一个程序只包含固定数量的且声明周期已知的对象， 那么这是一个非常简单的程序。
     - 不能依靠创建命名的引用来持有每一个对象。
-    
+
 ## 泛型和类型安全的容器
 - 使用 java SE5 之前，编译器允许你向容器中添加一个不正确的类型。
 - ArrayList 保存的是 Object 对象，所以可以通 add 方法添加不同的对象，但是如果要正确取出的时候需要强制转型。
@@ -40,6 +40,7 @@ public class ArrayTest {
 - java 容器类库的用途就是“保存对象”，并将其划分为两种不同的概念。
     1. Collection。一个独立元素的序列，这些元素都服从一条或多条规则。
     2. Map。一组成对的“键值对”对象，允许你使用的键来查找对象值。
+
 ## 添加一组元素
 在 java.util 包中的 Arrays 和 Collections 类都有很多中方法，可以在 Collection 中添加一组元素。
     - Arrays.asList() 方法接收一个数组或者一个用逗号分隔的元素列表，并将其转变为 List 对象。底层是数组，不能执行 add() 或 delete() 操作。
@@ -58,7 +59,7 @@ List 承诺可以将元素位于在特定的序列中。是一种可修改序列
  - LinkedList，通过较低的代价在 List 中间添加和删除，提供优化的顺序访问。对于随机访问比较慢，但是操作比 ArrayList 多。
 
 ### 基本操作
-1. indexOf() :  如果有一个对象引用，可以发现该对象在 List 中的索引编号，如果没有返回： -1 。
+1. indexOf() :  如果有一个对象引用，可以发现该对象在 List 中的索引编号，如果没有返回： -1。
 2. subList():   从较大的 List 中截取一个片段。返回的是原 List 的一个“视图”，所有操作都会映射到原 List 中， 反之亦然。
 3. retainAll()、removeAll()、indexOf() 都依赖 equals() 方法。
 
@@ -75,6 +76,7 @@ ListIterator 是一个更强大的 Iterator 的子类型，只能用于各种 Li
 ## LinkedList
 LinkedList 也像 ArrayList 一样实现了基本的 List 接口。
 - LinkedList 还可以作为栈、队列、双端队列用法。
+
 ## Stack
 “栈” 指“后进先出”的容器。
 - LinkedList 做栈用。
