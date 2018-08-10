@@ -152,6 +152,7 @@ List<Fruit> list = new ArrayList<Apple>();
     }
 ```
 - List 参数是 `<? super T>`，因此这个 List 持有从 T 导出某种 **具体类型**。 
+
 ### 无边界通配符
 无边界通配符 <?> : 意味着任何事物，允许参数是任何类型。
 - List<?> 看起来等价于 List<Object>，而 List 也是 List<Object>。
