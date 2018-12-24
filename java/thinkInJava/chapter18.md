@@ -29,19 +29,21 @@
 
 ## 输入和输出
 
-> 任何`InputStream`或`Reader` 派生而来的类都有名为`read()`的方法，用于读单个字节或者字节数组；从`OutputStream`或`Writer`派生而来的类都有`write()`方法，用于写单个字节或者字节数组。
+> 任何 `InputStream` 或 `Reader` 派生而来的类都有名为 `read()` 的方法，用于读单个字节或者字节数组；从 `OutputStream` 或 `Writer` 派生而来的类都有 `write()` 方法，用于写单个字节或者字节数组。
 
 ### InputStream 类型
 
-    > 表示从不同数据原产生的输入类: 字节数组、String 对象、文件、管道、其他流组成的序列、其他数据源。
-    - `StringBufferInputStream`: 将 String 转换成 `InputStream`。
-    - `FileInputStream`: 从文件中读取信息。
-    -  ....
+> 表示从不同数据原产生的输入类: 字节数组、String 对象、文件、管道、其他流组成的序列、其他数据源。
+
+- `StringBufferInputStream`: 将 String 转换成 `InputStream`。
+- `FileInputStream`: 从文件中读取信息。
+- ....
 
 ### OutputStream 类型
 
-    > 该类别决定了输出要去的目标: 字节数组、文件、管道。
-    - `FileOutputStream` 将信息写入文件。
+> 该类别决定了输出要去的目标: 字节数组、文件、管道。
+
+- `FileOutputStream` 将信息写入文件。
 
 ## 添加属性和有用的接口
 
@@ -49,14 +51,14 @@
 
 ### 通过 `FilterInputStream` 和 `FilterOutputStream` 读取数据
 
-    - `DataInputStream` 允许读取不同的基本数据类型及 String 对象（所有的方法都以`read`开头，如:`readByte()、readFloat()`）。
-    - `DataInputStream` 用 `readByte()`时，任何字节值都是合法的，不能用返回值来判断是否结束。可使用 `avaliable()` 方法查看还有多少个可存取的字符。
-    - 当使用 `readUTF()` 和 `writeUTF()` 时，只适用于 Java 程序之间的交互。
+- `DataInputStream` 允许读取不同的基本数据类型及 String 对象（所有的方法都以`read`开头，如:`readByte()、readFloat()`）。
+- `DataInputStream` 用 `readByte()`时，任何字节值都是合法的，不能用返回值来判断是否结束。可使用 `avaliable()` 方法查看还有多少个可存取的字符。
+- 当使用 `readUTF()` 和 `writeUTF()` 时，只适用于 Java 程序之间的交互。
 
 ### 通过 `FilterOutputStream` 向 `OutputStream` 中写入数据
 
-    - 与 `DataInputStream` 对应的是 `DataOutputStream`，可以将各种基本数据类型以及 String 对象格式化输入到“流”中。
-    - `PrintStream` 和`PrintWriter` : 未完全国际化，不能以平台无关的方式处理。
+- 与 `DataInputStream` 对应的是 `DataOutputStream`，可以将各种基本数据类型以及 String 对象格式化输入到“流”中。
+- `PrintStream` 和`PrintWriter` : 未完全国际化，不能以平台无关的方式处理。
 
 ## Reader 和 Writer
 
@@ -165,7 +167,7 @@ public class GetChannel {
 
 ### 获取基本类型
 
-> 尽管 `ByteBuffer`只能保存字节类型的数据，但是它具有可以从其容纳的字节数据中产生各种不同**基本类型**的方法。
+> 尽管 `ByteBuffer` 只能保存字节类型的数据，但是它具有可以从其容纳的字节数据中产生各种不同**基本类型**的方法。
 
 ```java
     ByteBuffer bb = ByteBuffer.allocate(1024);
