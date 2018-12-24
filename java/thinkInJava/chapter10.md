@@ -1,9 +1,13 @@
-# <center> 第 10 章  内部类 </center> #
+# <center> 第 10 章 内部类 </center>
+
 ## 链接到外部类
+
 内部类自动拥有对外围类所有成员的访问权。当生成一个内部类的对象时，此对象与制造他的*外围对象*指甲就有了一种联系，所有他能访问其外围对象的所有成员，而*不需要*任何特殊条件。
 
 ## 使用 .this 和 .new
-- .this : 如果需要在内部类中生成对外部类对象的引用。可以使用外部类的名字后面紧跟原点和 this。 
+
+- .this : 如果需要在内部类中生成对外部类对象的引用。可以使用外部类的名字后面紧跟原点和 this。
+
 ```java
 public class DotThis {
 	public class Inner{
@@ -13,8 +17,9 @@ public class DotThis {
 	}
 }
 ```
-- .new :  如果想要直接创建内部类的对象。必须要使用外部类的对象来创建该内部类的对象。private 内部类不能用 .new 创建。
-	- 之内在外部类中创建对象，并调用相应方法，不能将 private 内部类作为返回类型返回。
+
+- .new : 如果想要直接创建内部类的对象。必须要使用外部类的对象来创建该内部类的对象。private 内部类不能用 .new 创建。 - 之内在外部类中创建对象，并调用相应方法，不能将 private 内部类作为返回类型返回。
+
 ```java
 public class DotThis {
 	public class Inner{
@@ -25,19 +30,23 @@ public class DotThis {
 	public static void main(String [] args){
 		DotThis outter = new DotThis();
 		DotThis.Inner inner = outter.new Inner();
-		DotThis retInner = inner.outer(); 
+		DotThis retInner = inner.outer();
 	}
 }
 ```
 
 ## 内部类向上转型
+
 内部类向上转型为基类，尤其是转型为一个接口的时候，内部类就有了用武之地。
 
 ## 在方法和作用域内的内部类
+
 - 作用域外不可见
 
 ## 匿名内部类
+
 - 实现一个接口实现类
+
 ```java
 public interface InterfaBeImpl {
 	void speak();
@@ -53,7 +62,9 @@ public class DotThis {
         }
 }
 ```
+
 - 返回一个以已存在类为基类的对象。
+
 ```java
 public class Warp {
 	private int x;
@@ -68,7 +79,7 @@ public class DotThis {
 			public void speak() { // 复写方法
 				super.speak();
 				System.out.println("BBBBBBB");
-			}			
+			}
 		};
 	}
 }
@@ -76,32 +87,38 @@ public class DotThis {
 ```
 
 - 注意：
-    1. 定义一个匿名内部类，并希望它使用一个在外部定义的对象，那么编译器会要求其参数引用是 final 的。
-    2. 匿名内部类不可能有命名构造器，但是通过*实例初始化*，就能达到跟构造器一样的效果。
-        ```java
-        public Warp warpping(){
-            return new Warp(){
-                {
-                    System.out.println("Entuty initialization");
-                }
-                @Override
-                public void speak() {
-                    super.speak();
-                    System.out.println("BBBBBBB");
-                }	
-            };
-	    }
 
-        ```
+  1. 定义一个匿名内部类，并希望它使用一个在外部定义的对象，那么编译器会要求其参数引用是 final 的。
+  2. 匿名内部类不可能有命名构造器，但是通过*实例初始化*，就能达到跟构造器一样的效果。
+
+     ```java
+     public Warp warpping(){
+         return new Warp(){
+             {
+                 System.out.println("Entuty initialization");
+             }
+             @Override
+             public void speak() {
+                 super.speak();
+                 System.out.println("BBBBBBB");
+             }
+         };
+     }
+
+     ```
 
 ## 嵌套内部类
+
 如果不需要内部类对象与其外围类之间有联系，那可以把内部类声明为 static 的，这统筹称为**嵌套类**。
+
 - 当内部类是 static 时
-    1. 要创建嵌套类对象，并不需要其外围类对象。
-    2. 不能从嵌套类中的对象中访问非静态的外围类对象。
+  1. 要创建嵌套类对象，并不需要其外围类对象。
+  2. 不能从嵌套类中的对象中访问非静态的外围类对象。
 
 ### 接口内部的类
+
 正常情况下，不能在接口内部放置任何代码，但嵌套类可以做为接口的一部分。
+
 ```java
 public interface InterfaBeImpl {
 	void speak();
@@ -128,38 +145,44 @@ public class DotThis {
 ```
 
 ## 为什么需要内部类
+
 内部类继承自某个类或者实现某个接口，内部类的代码操作创建它的外围类的对象。<br><br>
 内部类必须回答的问题：
 
-1. 如果只是需要一个对接口的引用，为什么不通过外围类的实习那接口？<br>
-    - 答案是： 如果这能满足需求，那就应该这样做。
+1. 如果只是需要一个对接口的引用，为什么不通过外围类来实现接口？<br>
+   - 答案是： 如果这能满足需求，那就应该这样做。
 2. 内部类实现接口和外围类实现接口的区别？
-    - 答案是：后者不能总享受接口带来的便利，有时候需要用到接口的实现。
+   - 答案是：后者不能总享受接口带来的便利，有时候需要用到接口的实现。
 3. 内部类最吸引人的原因：
-    - 每个内部类都能独立继承一个接口，所以无论外围类是否已经继承了某个（接口的）实现，对于内部类都没有影响。
+   - 每个内部类都能独立继承一个接口，所以无论外围类是否已经继承了某个（接口的）实现，对于内部类都没有影响。
 
 ### 闭包与回调
+
 - P<sub>205</sub>
 - 闭包（closure）是一个可调用的对象，它记录了一些信息，这些信息来自于创建他的所用域。 内部类是面向对象的闭包。
 
 ### 内部类和框架控制
+
 - P<sub>207</sub>
+
 1. 控制框架的完整实现是有单个的类创建的，从而是的细节被封装起来。内部类用来表示解决问题所必须的各种不同的 action()。
 2. 内部类能容易的访问外围类的任意成员，所以可以避免这种实现变得笨拙。
 
-##内部类的继承
+## 内部类的继承
+
 - 内部类的构造器必须链接到指向外围类对象的引用
+
 ```java
-public class DotThis {	
+public class DotThis {
 	public DotThis(){
-		
+
 	}
 	public class Inner{
 		public DotThis outer(){
 			return DotThis.this;
 		}
 		public Inner(){
-			
+
 		}
 	}
 }
@@ -170,9 +193,12 @@ public class InheritInner extends DotThis.Inner {
 	}
 }
 ```
+
 ## 内部类可以被覆盖吗？
+
 继承外围类，然后重新定义此内部类，但是“覆盖”外围类的一个方法，其实并不起什么作用。
 
 ## 局部内部类
+
 - 局部内部类不能访问说明符，因为他不是外围类的一部分；但是它可以访问当前代码块内的常量，以及外围类的所有成员。
-    - 区别: 使用局部内部类有一个 命名构造器，匿名内部类没有具名构造器。
+  - 区别: 使用局部内部类有一个 命名构造器，匿名内部类没有具名构造器。
