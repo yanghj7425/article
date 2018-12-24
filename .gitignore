@@ -1,4 +1,3 @@
 *.iml
 WEB-INF*
-python/
 .idea/*
