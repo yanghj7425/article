@@ -110,8 +110,11 @@
     - `grant all privileges on demo.* to demo@"%" ;`
   - 刷新权限
     - `flush privileges;`       
-
-
+ - 6. 防火墙设置
+    - 打开端口
+      - `firewall-cmd  --permanent --zone=public --add-port=3306/tcp;`
+    - 重启防火墙
+      - ` systemctl restart firewalld`  
     
 ### 1.3.3. 网络设置
 - 使用 nmtui (Text User Interface for controlling NetworkManager), 是一个 centos7 自带的图形化网络管理工具。
