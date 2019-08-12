@@ -117,4 +117,7 @@
       - ` systemctl restart firewalld`  
     
 ### 1.3.3. 网络设置
-- 使用 nmtui (Text User Interface for controlling NetworkManager), 是一个 centos7 自带的图形化网络管理工具。
+- 生成配置文件
+  - 使用 nmtui (Text User Interface for controlling NetworkManager), 是一个 centos7 自带的图形化网络管理工具。
+- 防火墙设置
+  - [参考博客地址](#https://www.cnblogs.com/daxiongblog/p/6003170.html)  
