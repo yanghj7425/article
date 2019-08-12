@@ -17,9 +17,22 @@
   - 内核版本相关
     - `cat /proc/version`
     - `uname -a `、`uname -r` 
+    
   - 系统版本下相关
     - `lsb_release -a` 
     - `cat /etc/issue`
+  
+  - 后台运行
+    - `&` 表示后台运行
+    - `nohup /usr/local/redis/redis-5.0.2/bin/redis-server >/dev/null 2>&1 &`
+    - 参数说明
+      |   类型   | 文件描述符 | 默认情况 | 对应文件句柄位置|
+      |:--------:|:----------:|:-------:|:--------------:|
+      |标准输入(standard input)| 0 | 从键盘获得输入 | /proc/self/fd/0|
+      |标准输出(standard output)|1|输出到屏幕（即控制台）|/proc/self/fd/1|
+      |错误输出(error output)|2|输出到屏幕（即控制台）|/proc/self/fd/2|
+      
+
 
 ## 1.2. debain 
 - 替换源
@@ -36,7 +49,6 @@
 
 - 配置 shadowsocks 
     - https://github.com/fanach/download/releases/download/latest/shadowsocks-local-linux32-1.1.5.gz
-
 
 ## 1.3. centos
 
@@ -121,3 +133,5 @@
   - 使用 nmtui (Text User Interface for controlling NetworkManager), 是一个 centos7 自带的图形化网络管理工具。
 - 防火墙设置
   - [参考博客地址](#https://www.cnblogs.com/daxiongblog/p/6003170.html)  
+
+
