@@ -133,8 +133,8 @@ class ShadowSocks(object):
         with open(self.ssConfigPath, "w", encoding='utf-8') as f:
             json.dump(data, f, indent=4)
 
-       # subprocess.call('taskkill /f /im shadowsocks.exe', stdout=subprocess.PIPE)
-       # subprocess.Popen(self.ssPath)
+        subprocess.call('taskkill /f /im shadowsocks.exe', stdout=subprocess.PIPE)
+        subprocess.Popen(self.ssPath)
 
 
 ##################################################
@@ -174,10 +174,10 @@ UsaC_pattern = re.compile(
 
 if __name__ == '__main__':
     # 更改为你的ss程序路径
-    ssPath = "1"
+    ssPath = "D:\\software\\Shadowsocks"
 
     # 更换为你的ss配置文件路径
-    ssConfigPath = "/opt/software/shadowsocks/config.json"
+    ssConfigPath = "D:\\software\\Shadowsocks\\gui-config.json"
     a = ShadowSocks(ssPath, ssConfigPath)
     # a.printItem(pattern=JapanA_pattern)
     # a.printItem(pattern=JapanB_pattern)

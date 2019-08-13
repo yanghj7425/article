@@ -1,0 +1,32 @@
+<html ng-app="myApp">
+<head>
+    <script type="text/javascript" src="js/angular.min.js"></script>
+    <script type="text/javascript" src="js/chapter25.js"></script>
+</head>
+<style>
+    .download {
+        float: left;
+    }
+</style>
+<div ng-controller="transFileController as s">
+    <div class="download">
+        <script>
+            function fileChange() {
+                var ele = document.getElementById('arpBtn');
+                ele.click();
+            }
+        </script>
+
+        <button onclick="fileUpload.click()">上传文件</button>
+        <button ng-click="uploadFile()" style="display:none" id="arpBtn"></button>
+        <input type="file" style="display:none" id="fileUpload" value="选择文件" onchange="fileChange()" />
+
+    </div>
+
+    <div>
+        <button ng-click="fileDownload()"> 文件下载</button>
+
+    </div>
+</div>
+
+</html>
