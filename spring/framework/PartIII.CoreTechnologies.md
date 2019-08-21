@@ -1,7 +1,7 @@
-# Part III. Core Technologies
+# 1. Part III. Core Technologies
 
 <!--  catalog    -->
-## 目录
+## 1.1. 目录
 * [ Ioc 容器 ](#IoC容器)
     * [Spring IOC 容器和 Java bean 的介绍]()
 * [容器综述](#容器综述)
@@ -36,20 +36,20 @@
 这部分的参考文档覆盖的所有技术，都是 Spring 框架的组成部分。
 其中最主要的是 Spring 框架中的反转控制（IOC）容器。Spring 框架的 IoC 容器的彻底的处理是紧随其后的是 Spring 的全面覆盖的面向方面编程(aop)技术。Spring 框架有它自己的AOP框架，它的概念是容易理解的，他成功的解决了80% 的企业级 AOP 编程的需求。
 ……
-## IoC 容器
-### Spring IOC 容器和 Java bean 的介绍
+## 1.2. IoC 容器
+### 1.2.1. Spring IOC 容器和 Java bean 的介绍
 这章覆盖了Spring 框架的 IoC 的实现规则。IoC 因依赖注入儿众所周知。这也是定义它自己依赖的方式的一种方式，就是这样和其他的对象跟它一起工作，只有通过构造函器的参数，参数传递给一个工厂方法或者属性，在它的构造器或者工厂方法返回之后设置一个实例。当它创建类的时候容器注入这些依赖关系。这个过程是反转的基础，因此叫做反转控制（IoC），类它自己控制实例或者它依赖的位置通过直接构造类，或一个机制如服务定位器模式。<br><br>
 org.springframework.beans 和 org.springframework.context 包是 Spring 框架Ioc的基础， BeanFactory 接口提供了一个高级的配置机制关于管理任何类型的对象。ApplicationContext 是 BeanFactory 的一个子接口，他更容易的集成了Spring AOP 的特性： 消息资源控制，公共事件和应用层指定的上下文例如：WebApplicationContext 被用在 Web 应用中。<br><br>
 总而言之，BeanFactory 提供了框架的配置和基础的功能，ApplicationContext 添加了更多企业级的特性。ApplicationContext 是一个 BeanFactory 的一个完美超类，它仅仅被用在这章描述 Spring 的 Ioc 容器。更多用 BeanFactory 代替 ApplicationContext 的信息，参考7.16 BeanFactory。
 
 在 Spring 中，对象在应用中主要的形式和被 IOC 容器管理叫做 Bean，一个 Bean 是一个对象，它是一个实例，一个集合和任何被 Ioc 容器管理的。另外，一个 bean 不过是在你应用中众多对象中的一个。Beans ，他们之间的依赖关系被映射到一个配置的数据文件里面被容器使用。
-## 容器综述
+## 1.3. 容器综述
 org.springframework.context.ApplicationContext 接口代表了 Spring 的 Ioc 容器和负责实例化、配置、集成上述提到的 bean。容器得到他的实例对于每一个通过读配置数据文件实例、配置、装配的对象。数据配置文件描述在 XML 文件、Java 注解、或者 Java 代码。它允许你表达你的对象然后组成你的应用并且丰富对象之间的依赖接口。<br><br>
 一些实现了 ApplicationContext 接口被 Spring 提供为没有内建的。在单例应用中，通常是创建一个 ClasspathXmlApplication 或者FileSystemXmlApplicationContext 实例。XML 已经形成传统的格式，为了配置的数据文件你可以指示容器使用 Java 注解或者代码作为数据元格式通过提供少量的配置文件起声明使能支持这些添加的元数据格式。<br>
 在大多数应用的场景，显示的用户代码对于一个实例或者多个实例不是必须要的。例如，在 web 应用场景中，简单的 8 行样本文件 web 描述文件在 web.xml 中已经是足够的。如果你正在用 Spring Tool Suite 这样的开发环境这样的样本配置文件可以可以在点几下鼠标或者少量的按键后容易的被创建。<br>
 在 ApplicationContext 被创建和初始化之后，你的应用类和配置数据将被整合，你拥有一个配置完整和可以执行的系统和应用。
 
-### [配置元数据](#目录)
+### 1.3.1. [配置元数据](#目录)
 Spring 的 IOC 容器需要一个格式的来配置元数据；这个元数据代表你作为一个应用开发者告诉 Spring 容器怎样在应用中实例化、配置和集成对象。
 
 **注意**<br>
@@ -64,14 +64,14 @@ Spring 的 IOC 容器需要一个格式的来配置元数据；这个元数据�
         - @Import
         - @DependsOn
 
-###  实例化一个容器 
+### 1.3.2. 实例化一个容器 
 <span id="InstantiatingContainer"> </span>
 实例化一个 Ioc 容器是简单的，ApplicaationContext 构造器是一个实际的资源字符串允许从多种外部资源加载配置元数据，如：本地文件系统，Java ClassPath 等等。
 ```java
 ApplicationContext context = new ClassPathXmlApplicationContext("services.xml", "daos.xml");
 ```
 
-###  [合并基于XML配置的元数据](#目录)
+### 1.3.3. [合并基于XML配置的元数据](#目录)
 可以使用 ApplicationContext 构造器从所有的 XML 碎片（多个 XML 文件）中加载 bean 的定义。构造器可以持有多个 Resources 路径，就像上面这样。另外也可以使用 `<import/>` 元素:
 
 ```xml
@@ -91,7 +91,7 @@ ApplicationContext context = new ClassPathXmlApplicationContext("services.xml", 
 如果使用绝对路径：比如，`file:c:/config.xml`。 一般来说：最好保持一个对于这些资源路径的相对引用，可以通过`${}`占位符，JVM 在运行时解析属性。 
 
 
-### [容器的使用](#目录)
+### 1.3.4. [容器的使用](#目录)
 Application 使你可以读到 bean 的定义和访问他们通过下面的方式：
 ```java
 // create and configure beans
@@ -103,7 +103,7 @@ List<String> userList = service.getUsernameList();
 
 ```
 
-## [Bean的概念](#目录)
+## 1.4. [Bean的概念](#目录)
 容器的 bean 被绑定元数据创建，例如，xml 里面的 `<bean/>` 定义的。在容器内部这些 bean 被定义为一个包含元数据的 BeanDefinition 对象，通常包含以下信息：
 - 一个指定的包名：通常定义一个指定的实现类 bean。
 - bean 的行为配置元素，bean 在容器里面的状态（作用域、生命周期回掉 等等）。
@@ -121,7 +121,7 @@ List<String> userList = service.getUsernameList();
 > 这样就有三个名称指向同一个对象。
 
 
-### [通过构造器实例化](#目录)
+### 1.4.1. [通过构造器实例化](#目录)
 
 通过默认构造器实例化 bean ：
 ```xml
@@ -129,7 +129,7 @@ List<String> userList = service.getUsernameList();
     <bean name="anotherExample" class="examples.ExampleBeanTwo"/>
 ```
 
-### [通过静态工厂方法实例化](#目录)
+### 1.4.2. [通过静态工厂方法实例化](#目录)
 创建的类可以通过 factory-method 属性指定方法名称来通过指定的静态工厂方法来实例化：<br>
 xml 配置：
 ```xml
@@ -150,7 +150,7 @@ public class ClientService {
 
 ```
 
-### [使用实例工厂方法来实例化](#目录)
+### 1.4.3. [使用实例工厂方法来实例化](#目录)
 和静态工厂方法类似，实例工厂方法从容器中调用一个 bean 的非静态方法来创建一个新的 bean。为了使用这种机制，保持 class 属性为空，factory-bean 属性里面指定当前容器中被调用的 bean 对象，factory-method 指定方法名称。
 - 一个实例化工厂可以实例化多个 bean。<br>
 xml 配置：
@@ -176,13 +176,13 @@ public class DefaultServiceLocator {
 
 ```
 
-## [依赖](#目录)
+## 1.5. [依赖](#目录)
 一个典型的企业级应用不会由单一的一个对象组成。甚至一个简单的应用也会由多个对象一起工作。
 
-### [依赖注入](#目录)
+### 1.5.1. [依赖注入](#目录)
 依赖注入是通过定义对象来定义他们的依赖关系，这样，其他的对象就可以一起工作，只有通过构造器参数、工厂方法参数或属性设置一个对象，在对象被构造或者工厂方法返回之后。当 bean 被创建的时候，容器就会注入这些依赖。
 
-#### [构造器注入](#目录)
+#### 1.5.1.1. [构造器注入](#目录)
 构造器的注入是通过容器调用一个有参数的构造器完成的，每一个参数代表一个依赖关系。<br>
 构造器使用参数类型来匹配当前的构造器。如果在构造器参数定义上没有歧义，在 bean 被构建的时候将按照构造器参数的顺序实例化：
 ```java
@@ -235,7 +235,7 @@ public class ExampleBean {
 </bean>
 ```
 
-#### [基于setter的赖注入](#目录)
+#### 1.5.1.2. [基于setter的赖注入](#目录)
 基于 setter 的依赖注入是通过在 bean 调用无参构造器或者无参数的静态工厂方法实例化你的 bean 之后调用 setter 方法。<br>
 下面的例子展示了你可以单纯的通过 setter 注入来实现依赖注入：   
 ```java
@@ -256,7 +256,7 @@ ApplicationContext 对 bean 的管理支持构造器注入和 setter 注入。�
     - 它可以设置一个默认值。
     - setter  注入使对象可以重新配置或者重新注入。
 
-### [依赖解析过程](#目录)
+### 1.5.2. [依赖解析过程](#目录)
 容器会这样执行去解决依赖问题：
 - ApplicationContext 会被配置元数据描述的 bean 创建和初始化。配置元数据可以通过 xml、Java code、或者注解。
 - 对于每一个 bean 它的依赖关系通过属性、构造参数、静态工厂方法的参数表达。当这个 bean 被实际创建的时候这些依赖关键会被提供给 bean。
@@ -269,7 +269,7 @@ ApplicationContext 对 bean 的管理支持构造器注入和 setter 注入。�
 - spring 的 bean 默认采用预实例化和单例的方式：
     - 在这个 bean 实际被实例化之前预先分配一些时间和空间，这样可以发现一些 ApplicationContext 配置过程中的问题。可以改变默认的行为 lazy-initialize 而不是 pre-instantiated；或者改变作用域，为一个非单例的。
 
-#### [依赖注入的列子](#目录)
+#### 1.5.2.1. [依赖注入的列子](#目录)
 - xml 配置的元数据基于 setter 方法的注入：<br>
     xml 实例：<br>
     ```xml
@@ -368,7 +368,7 @@ ApplicationContext 对 bean 的管理支持构造器注入和 setter 注入。�
 
     ```
 
-## [依赖配置细节](#目录)
+## 1.6. [依赖配置细节](#目录)
 你可以定义属性和构造参数引用其它容器内管理的 bean。在 xml 的配置中，`<property/>` 和 `<constructor-arg/>` 元素来支持这个功能。<br>
 你可以配置一个 java.util.Properties 实例：
 ```xml
@@ -385,7 +385,7 @@ ApplicationContext 对 bean 的管理支持构造器注入和 setter 注入。�
 ```
 - Spring 容器通过 PropertyEditor 机制，转变 `<value/>` 元素内部的文本到一个 java.util.Properties 实例。 Spring 团队推荐使用嵌套 `<value/>` 元素来覆盖 value 属性。
 
-### [idref元素](#目录)
+### 1.6.1. [idref元素](#目录)
  idref 元素是一个简单的错误保证方式；通过其它容器里内 bean 的 id 来引用元素到一个`<constructor-arg/>` 或 `<property/>` 元素。<br>
  xml 实例:
  ```xml
@@ -409,7 +409,7 @@ ApplicationContext 对 bean 的管理支持构造器注入和 setter 注入。�
 
 一个共同的地方(最新的和 spring 2.0)，`<idref/>` 元素带来的值是在一个拦截器里面作为 ProxyFactoryBean 被定义的。使用 `<idref/>` 元素当你用拦截器去指定拦截元素的时候会保证你不会拼写错误。
 
-### [内部bean](#目录)
+### 1.6.2. [内部bean](#目录)
 一个 `<bean/>` 元素在 `<property/>` 或者  `<constructor-arg/>` 元素内部定义，叫作内部 bean。
 ```xml
 <bean id="outer" class="...">
@@ -425,7 +425,7 @@ ApplicationContext 对 bean 的管理支持构造器注入和 setter 注入。�
 ```
 - 内部类总是匿名的，随着外部类的创建而创建的。
 
-### [使用depends-on](#目录)
+### 1.6.3. [使用depends-on](#目录)
 depends-on 属性可以现实的强制一个或者多个 bean ，在使用了 depends-on 的这个元素初始化之前。<br>
 xml 实例,依赖单个 bean:
 ```xml
@@ -443,17 +443,17 @@ xml 实例，依赖多个 bean:
 > **注意：**<br>
 依赖定义的 depends-on 依赖关系首先被销毁，在 bean 销毁之前。因此，depends-on 也可以控制关闭顺序。
 
-### [方法注入](#目录)
+### 1.6.4. [方法注入](#目录)
 在大多数引用场景，容器里面的 bean 都是单例的。可以通过依赖关系注入，但是当两个 bean 作用域不一样的时候：一个单例需要一个非单例的 bean，此时单例 A 将在创建的时候添加非单例的 B 的依赖。但是 A 只会在创建的时候被调用，并且实例化 B。这样 B 就不能及时得到一个新的实例。<br>
 一个解决方法是放弃一些反转控制特性，可以让 A 通过实现 ApplicationContextAware 接口，使 bean 让容器保持警觉，这样通过 getBean() 方法获取到的 bean 就都是新的实例了。
 
-#### [查找方法注入](#目录)
+#### 1.6.4.1. [查找方法注入](#目录)
 查找方法注入是一种能让容器覆盖当前容器内管理的 bean 的方法的能力。Spring 框架从 CGLIB　库使用字节码动态生成一个子类覆盖这个方法。<br>
 
 **注意：**
 - 为了使动态子类工作，Spring 容器将子类化的 bean 不能是 final 的，将要覆盖的方法也不能是 final 的。
 
-## [bean域](#目录)
+## 1.7. [bean域](#目录)
 创建一个 bean 的定义时，就创建了一个通过 bean 的定义创建实例的处方。bean 的定义是一个处方这是一个重要的概念，因为着意味着：作为一个类，你可以从一个处方中创建多个对象的实例。<br>
 你不仅可以控制被插入对象的个别的 bean 的定义及其各种依赖关系和配置的值，而且对象的域从一特殊的 bean 定义创建。这种方式时非常有用和高度灵活的，你可以通过配置来替代 class 的水平来选择你所创建对象的作用域。Beans 可以被定义和发布在多个作用域中：Spring Framework 提供 7 种作用域，5 种是可用的如果你使用 ApplicationContext。
 
@@ -476,19 +476,19 @@ xml 实例，依赖多个 bean:
 <!-- the following is equivalent, though redundant (singleton scope is the default) -->
 <bean id="accountService" class="com.foo.DefaultAccountService" scope="singleton"/>
 ```
-### [原型作用域](#目录)
+### 1.7.1. [原型作用域](#目录)
 非单例的，原型作用域发布的结果是每一次请求都创建一个新的实例。换言之，bean 被注入到另一个 bean 中或者通过 getBean() 方法在容器内请求。作为一个规则，对所有 `有状态` 的 bean 使用原型作用域；对 `无状态` 的 bean 使用单例作用域。参考定义如下：
 ```xml
 <bean id="accountService" class="com.foo.DefaultAccountService" scope="prototype"/>
 ```
 
-### [单例作用域和原型作用域的依赖](#目录)
+### 1.7.2. [单例作用域和原型作用域的依赖](#目录)
 当在一个单例作用域的 bean 依赖一个 原型作用域的 bean 的时候，要意识到*依赖关系是在实例化的时候确定的*。因此如果依赖注入一个原型作用域的 bean 到一个单例作用域的 bean 中，一个新的原型 bean 将被实例化然后注入到单例 bean 中。这个原型实例是为单例作用域 bean 提供的唯一的实例。<br>
 然而，假设你想要一个单例作用域 bean 在运行时需要一个新的原型作用域实例。你不能依赖注入一个原型作用域的 bean 到你单例作用域的 bean 中，因为注入只出现一次，当 Spring 容器初始化单例作用域 bean 的时候就会解析和注入它们的依赖关系。如果在运行时不止一次需要一个新的原型作用域，请参考[方法注入](#方法注入)。
 
-### [request、session 、global session、application 和 WebSocket 域](#目录)
+### 1.7.3. [request、session 、global session、application 和 WebSocket 域](#目录)
 request, session,global session, application 和 websocket 域只有你使用了有 web-ware 的 Spring ApplicationContext 实现(比如 XmlWebApplication)。如果你在一个正常的 Spring IOC 容器中使用这些作用域比如： ClassPathXmlApplicationContext，一个 IllegalStateException 将要被抛出抱怨说:不知道这个 bean 的作用域。
-#### [初始化Web配置](#目录)
+#### 1.7.3.1. [初始化Web配置](#目录)
 为了支持 request, session,globalSession,application 和 websocket 作用域，在定义 bean 之前一些辅助的初始化配置是必须的。(这样的初始化在标准的单例作用域和原型作用域中是不需要的。)<br>
 你如何完成这个初始化步骤取决于你特定的 Servlet 环境。<br>
 如果你访问作用域在 Spring Web MVC 中，实际上请求时被 DispatcherServlet 或者 DispatcherPortlet 处理，然后就没有必须的步骤了：DispatcherServlet 和 DispatcherPortlet 已经暴露了所有相关状态。<br>
@@ -521,7 +521,7 @@ request, session,global session, application 和 websocket 域只有你使用了
 ```
 DiapatcherServlet、RequestContextListener、RequestContextFilter 都做着同样的事情，也就是绑定 HTTP 请求对象到一个请求服务的 Thread。这使得在 request-scoped 和 session-scoped 上的 bean 可以沿着链往下。
 
-#### [请求作用域](#目录)
+#### 1.7.3.2. [请求作用域](#目录)
 对于一个 bean 的定义参考下面的 XML 配置：
 ```xml
     <bean id="loginAction" class="com.foo.LoginAction" scope="request"/>
@@ -537,7 +537,7 @@ public class LoginAction{
 
 ```
 
-#### [会话作用域](#目录)
+#### 1.7.3.3. [会话作用域](#目录)
 对于一个 bean 的定义参考下面的 XML 配置：
 ```xml
 <bean id="userPreferences" class="com.foo.UserPreferences" scope="session"/>
@@ -554,7 +554,7 @@ public class UserPreferences {
 }
 
 ```
-#### [Global回话作用域](#目录)
+#### 1.7.3.4. [Global回话作用域](#目录)
 
 参考下面的配置：
 
