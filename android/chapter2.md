@@ -1,9 +1,11 @@
 # 入手
 
 ## 在活动中使用 menu
+
 - 新建 xml 文件使用 `<menu>` 标签创建 menu 菜单。
-    - 在 `<menu>` 标签内使用 `<item>` 创建对应的菜单选项。
+  - 在 `<menu>` 标签内使用 `<item>` 创建对应的菜单选项。
 - 在需要使用 menu 菜单的 activity 中复写 onCreateOptionsMenu() 方法加载菜单。
+
 ```java
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -12,9 +14,12 @@
     }
 
 ```
+
 > getMenuInflater() 方法返回一个 MenuInflater 对象，再调用的 inflate() 方法就可以加载菜单。
+
 - 在 Activity 中复写 onOptionsItemSelected() 方法来响应对菜单的操作。
-    - finish() 销毁一个活动。
+  - finish() 销毁一个活动。
+
 ```java
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
